@@ -1,0 +1,24 @@
+[package]
+name = "devkit"
+version = "0.1.0"
+edition = "2024"
+
+[lib]
+name = "devkit"    
+path = "workspaces/main.rs"
+
+[[bin]]
+name="devkit"
+path = "workspaces/main.rs"
+
+[dependencies]
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+colored = "3"
+lexopt = "0.3.1"
+normalize-path = "0.2.1"
+walkdir = "2.5.0"
+tokio = { version = "1.49.0", features = ["rt-multi-thread"] }
+futures = "0.3.31"
+
+
