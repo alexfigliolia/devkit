@@ -2,14 +2,17 @@
   "name": "devkit",
   "version": "1.0.0",
   "description": "Typescript monorepos powered by rust",
+  "license": "MIT",
+  "author": "Alex Figliolia",
   "main": "src/index.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "Alex Figliolia",
-  "license": "MIT",
   "devDependencies": {
     "@types/node": "^25.0.10",
+    "oxfmt": "^0.27.0",
+    "oxlint": "^1.42.0",
+    "oxlint-tsgolint": "^0.11.3",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3"
   }
