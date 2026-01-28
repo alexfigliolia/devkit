@@ -22,7 +22,7 @@ impl LocateCommand {
             root,
             definition: InternalExecutableDefinition {
                 name: "locate-command",
-                description: "Locates the command definition for a registered command",
+                description: "Locates command definitions",
                 args: HashMap::from([("<name>", "The name of a registered command")]),
             },
         }
@@ -35,7 +35,7 @@ impl InternalExecutable for LocateCommand {
             Logger::exitWithInfo("Please specify a command to locate");
         }
         let command = &args[0];
-        Logger::info(format!("Locating a command named {}", Logger::blue_bright(command)).as_str());
+        Logger::info(format!("Locating a command named {}", Logger::cyan_bright(command)).as_str());
         let finder = ExternalCommands::new(self.root.clone());
         let commands = executor::block_on(finder.find_all());
         if commands.contains_key(command) {
@@ -49,7 +49,7 @@ impl InternalExecutable for LocateCommand {
         Logger::exitWithError(
             format!(
                 "I could not find a command named {}",
-                Logger::blue_bright(command)
+                Logger::cyan_bright(command)
             )
             .as_str(),
         );

@@ -3,7 +3,8 @@ use std::path::{Path, PathBuf};
 use serde_json::from_str;
 
 use crate::{
-    configuration::configuration::{DevKitCommand, DevKitConfig},
+    configuration::configuration::Configuration,
+    devkit::interfaces::{DevKitCommand, DevKitConfig},
     executor::executor::Executor,
 };
 
@@ -12,7 +13,10 @@ pub struct TypescriptCommand;
 impl TypescriptCommand {
     pub fn parse_configuration(root: &String) -> DevKitConfig {
         let executable = TypescriptCommand::path_to_command("parse_configuration.ts");
-        let stdout = Executor::exec(format!("npx tsx {executable} --root {root}").as_str());
+        let stdout = Executor::exec(format!("npx tsx {executable} --root {root}"));
+        if stdout.len() == 0 {
+            Configuration::create(root);
+        }
         let DevKitConfig {
             project,
             workspaces,

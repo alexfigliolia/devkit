@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 
 use crate::{
-    configuration::configuration::{Command, DevKitCommand},
+    devkit::interfaces::{Command, DevKitCommand},
     executables::{
         intenal_executable::InternalExecutable,
         internal_executable_definition::InternalExecutableDefinition,
@@ -17,12 +17,15 @@ impl Help {
         externals: &HashMap<String, DevKitCommand>,
     ) {
         let sorted_internals = Help::sort_internal(&internals);
-        let sorted_externals = Help::sort_external(&externals);
         Logger::space_around("Internal Commands:");
         for internal in sorted_internals {
             Help::internal_command(&internal.get_definition());
             println!("");
         }
+        if externals.len() == 0 {
+            return;
+        }
+        let sorted_externals = Help::sort_external(&externals);
         Logger::info("Registered Commands:");
         println!("");
         for external in sorted_externals {
@@ -33,20 +36,36 @@ impl Help {
 
     pub fn internal_command(command: &InternalExecutableDefinition) {
         println!(
-            "{}{}",
+            "{}{} {}",
             Logger::indent(Some(3)),
-            Logger::blue_bright(&command.name)
+            Logger::blue_bright(&command.name),
+            Logger::gray(format!("{}", command.description).as_str()),
         );
         Help::print_args(&command.args);
     }
 
     pub fn external_command(command: &DevKitCommand) {
         println!(
-            "{}{}",
+            "{}{} {}",
             Logger::indent(Some(3)),
-            Logger::blue_bright(&command.name)
+            Logger::blue_bright(&command.name),
+            Logger::gray(format!("{}", command.description).as_str()),
         );
-        Help::print_commands(&command.commands);
+        Help::print_commands(&command.commands, Some(6));
+    }
+
+    pub fn print_commands(map: &HashMap<String, Command>, indentation: Option<i32>) {
+        for (name, command) in map {
+            println!(
+                "{}",
+                format!(
+                    "{}{}{}",
+                    Logger::indent(indentation),
+                    Logger::green(format!("{}: ", name).as_str()),
+                    Logger::gray(format!("{}", command.description).as_str()),
+                )
+            );
+        }
     }
 
     fn print_args(map: &HashMap<&'static str, &'static str>) {
@@ -57,21 +76,7 @@ impl Help {
                     "{}{}{}",
                     Logger::indent(Some(6)),
                     Logger::green(format!("{}: ", name).as_str()),
-                    description,
-                )
-            );
-        }
-    }
-
-    fn print_commands(map: &HashMap<String, Command>) {
-        for (name, command) in map {
-            println!(
-                "{}",
-                format!(
-                    "{}{}{}",
-                    Logger::indent(Some(6)),
-                    Logger::green(format!("{}: ", name).as_str()),
-                    command.description,
+                    Logger::gray(format!("{}", description).as_str()),
                 )
             );
         }

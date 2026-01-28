@@ -8,11 +8,9 @@ use std::{
 use walkdir::{DirEntry, Error, WalkDir};
 
 use crate::{
-    concurrency::thread_pool::ThreadPool,
-    configuration::configuration::DevKitCommand,
+    concurrency::thread_pool::ThreadPool, devkit::interfaces::DevKitCommand,
     executables::intenal_executable::InternalExecutable,
-    internal_commands::{register_command::RegisterCommand, typescript_command::TypescriptCommand},
-    logger::logger::Logger,
+    internal_commands::typescript_command::TypescriptCommand, logger::logger::Logger,
 };
 
 pub struct ExternalCommands {
@@ -54,7 +52,7 @@ impl ExternalCommands {
                 Logger::info(
                     format!(
                         "I encountered a command named {} that conflicts with one of my internals",
-                        Logger::blue_bright(&name),
+                        Logger::cyan_bright(&name),
                     )
                     .as_str(),
                 );
@@ -62,7 +60,7 @@ impl ExternalCommands {
                     format!(
                         "{}{}",
                         Logger::indent(None),
-                        Logger::blue_bright(&command.location),
+                        Logger::cyan_bright(&command.location),
                     )
                     .as_str(),
                 );

@@ -28,7 +28,7 @@ impl RegisterCommand {
             root,
             definition: InternalExecutableDefinition {
                 name: "register-command",
-                description: "Creates new Devkit commands in the specified directory",
+                description: "Creates new Devkit commands",
                 args: HashMap::from([(
                     "--path | -p",
                     "A relative path to your preferred command location",
@@ -60,12 +60,12 @@ impl RegisterCommand {
         if path_arg == "" {
             RegisterCommand::exit_on_missing_path();
         }
-        let path = Path::new(self.root.as_str()).join(&path_arg).normalize();
+        let path = Path::new(&self.root).join(&path_arg).normalize();
         if !path.exists() {
             Logger::info(
                 format!(
                     "Creating the path {} in your file system",
-                    Logger::blue_bright(path_arg.as_str())
+                    Logger::cyan_bright(path_arg.as_str())
                 )
                 .as_str(),
             );
@@ -79,13 +79,13 @@ impl RegisterCommand {
             Logger::error(
                 format!(
                     "A {} file already exists in this directory",
-                    Logger::blue_bright("Commands.ts")
+                    Logger::cyan_bright("Commands.ts")
                 )
                 .as_str(),
             );
             Logger::info(format!(
                 "You can append additional commands to the existing {} instance or export another one",
-                Logger::blue_bright("DevKitCommand")
+                Logger::cyan_bright("DevKitCommand")
             ).as_str());
             process::exit(0);
         }
@@ -96,7 +96,7 @@ impl RegisterCommand {
         Logger::exitWithError(
                 format!(
                     "Please specify a path to a directory relative to the root of your repository using the {} argument",
-                    Logger::blue_bright("--path | -p")
+                    Logger::cyan_bright("--path | -p")
                 )
                 .as_str(),
             );
@@ -120,11 +120,11 @@ impl InternalExecutable for RegisterCommand {
         io::copy(&mut source, &mut target).expect("writing");
         (&target).sync_all().expect("Flushing");
         Logger::info("Creating command file");
-        Logger::info("Please fill out your command file located at");
+        Logger::info("Please fill out your command file located at:");
         println!(
             "\n{}{}\n",
             Logger::indent(None),
-            Logger::blue_bright(&command_path.to_str().expect(""))
+            Logger::cyan_bright(&command_path.to_str().expect(""))
         );
     }
 

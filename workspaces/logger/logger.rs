@@ -1,10 +1,18 @@
-use std::process;
+use std::sync::Mutex;
+use std::{process, sync::LazyLock};
 
-use colored::{ColoredString, Colorize};
+use colored::{ColoredString, Colorize, CustomColor};
 
-pub struct Logger;
+static REGISTERED_NAME: LazyLock<Mutex<String>> =
+    LazyLock::new(|| Mutex::new("Devkit".to_string()));
+
+pub struct Logger {}
 
 impl Logger {
+    pub fn set_name(value: &str) {
+        *REGISTERED_NAME.lock().unwrap() = value.to_string();
+    }
+
     pub fn info(message: &str) {
         println!("{}{}", Logger::info_prefix(), message);
     }
@@ -45,18 +53,42 @@ impl Logger {
     }
 
     pub fn magenta(message: &str) -> ColoredString {
-        return message.bright_magenta();
+        return message.magenta();
     }
 
     pub fn green(message: &str) -> ColoredString {
         return message.green();
     }
 
+    pub fn green_bright(message: &str) -> ColoredString {
+        return message.bright_green();
+    }
+
+    pub fn cyan(message: &str) -> ColoredString {
+        return message.cyan();
+    }
+
+    pub fn cyan_bright(message: &str) -> ColoredString {
+        return message.bright_cyan().bold();
+    }
+
+    pub fn gray(message: &str) -> ColoredString {
+        return message.custom_color(CustomColor {
+            r: 128,
+            g: 128,
+            b: 128,
+        });
+    }
+
     fn info_prefix() -> ColoredString {
-        return "Devkit: ".bright_magenta().bold();
+        return format!("{}: ", *REGISTERED_NAME.lock().unwrap())
+            .bright_magenta()
+            .bold();
     }
 
     fn error_prefix() -> ColoredString {
-        return "Devkit: ".red().bold();
+        return format!("{}: ", *REGISTERED_NAME.lock().unwrap())
+            .red()
+            .bold();
     }
 }
