@@ -35,12 +35,12 @@ impl ExternalCommands {
             if path.is_file() && path.extension().map(|ext| ext == "ts").unwrap_or(false) {
                 let clone = path.clone();
                 let async_task = pool.spawn(move || ExternalCommands::read(&path));
-                if async_task.await.unwrap() == true {
+                if async_task.await.unwrap() {
                     paths.push((clone).into_os_string().into_string().expect("stringify"));
                 }
             }
         }
-        return self.collect_instances(paths);
+        self.collect_instances(paths)
     }
 
     pub fn validate(
@@ -52,7 +52,7 @@ impl ExternalCommands {
                 Logger::info(
                     format!(
                         "I encountered a command named {} that conflicts with one of my internals",
-                        Logger::cyan_bright(&name),
+                        Logger::cyan_bright(name),
                     )
                     .as_str(),
                 );
@@ -75,7 +75,7 @@ impl ExternalCommands {
         for command in commands {
             map.insert(command.name.clone(), command);
         }
-        return map;
+        map
     }
 
     fn read(path: &Path) -> bool {
@@ -87,11 +87,11 @@ impl ExternalCommands {
                 return true;
             }
         }
-        return false;
+        false
     }
 
     fn allowed(&self, entry: &Result<DirEntry, Error>) -> bool {
-        return entry.is_ok()
+        entry.is_ok()
             && !self.black_list_dirs(
                 entry
                     .as_ref()
@@ -99,7 +99,7 @@ impl ExternalCommands {
                     .path()
                     .to_str()
                     .expect("stringify"),
-            );
+            )
     }
 
     fn black_list_dirs(&self, path: &str) -> bool {
@@ -131,7 +131,7 @@ impl ExternalCommands {
                 }
             }
         }
-        return false;
+        false
     }
 
     fn restrict(path: &str, tokens: &[&str], direction: RestrictDirection) -> bool {
@@ -149,7 +149,7 @@ impl ExternalCommands {
                 }
             }
         }
-        return false;
+        false
     }
 }
 

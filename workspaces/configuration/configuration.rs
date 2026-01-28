@@ -16,7 +16,7 @@ impl Configuration {
         let mut source = File::open(Configuration::template_path()).expect("Template");
         let mut target = File::create(Path::new(&file_path)).expect("creating");
         io::copy(&mut source, &mut target).expect("writing");
-        (&target).sync_all().expect("Flushing");
+        target.sync_all().expect("Flushing");
         println!(
             "\n{}{}\n",
             Logger::indent(None),
@@ -36,6 +36,6 @@ impl Configuration {
         let dir = Path::new(file_path)
             .parent()
             .expect("Failed to get parent directory");
-        return dir.join("configuration_template.ts");
+        dir.join("configuration_template.ts")
     }
 }

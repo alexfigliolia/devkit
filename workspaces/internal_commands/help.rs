@@ -16,21 +16,21 @@ impl Help {
         internals: &HashMap<String, Box<dyn InternalExecutable>>,
         externals: &HashMap<String, DevKitCommand>,
     ) {
-        let sorted_internals = Help::sort_internal(&internals);
+        let sorted_internals = Help::sort_internal(internals);
         Logger::space_around("Internal Commands:");
         for internal in sorted_internals {
-            Help::internal_command(&internal.get_definition());
-            println!("");
+            Help::internal_command(internal.get_definition());
+            println!();
         }
-        if externals.len() == 0 {
+        if externals.is_empty() {
             return;
         }
-        let sorted_externals = Help::sort_external(&externals);
+        let sorted_externals = Help::sort_external(externals);
         Logger::info("Registered Commands:");
-        println!("");
+        println!();
         for external in sorted_externals {
-            Help::external_command(&external);
-            println!("");
+            Help::external_command(external);
+            println!();
         }
     }
 
@@ -38,8 +38,8 @@ impl Help {
         println!(
             "{}{} {}",
             Logger::indent(Some(3)),
-            Logger::blue_bright(&command.name),
-            Logger::gray(format!("{}", command.description).as_str()),
+            Logger::blue_bright(command.name),
+            Logger::gray(command.description),
         );
         Help::print_args(&command.args);
     }
@@ -49,7 +49,7 @@ impl Help {
             "{}{} {}",
             Logger::indent(Some(3)),
             Logger::blue_bright(&command.name),
-            Logger::gray(format!("{}", command.description).as_str()),
+            Logger::gray(&command.description),
         );
         Help::print_commands(&command.commands, Some(6));
     }
@@ -62,7 +62,7 @@ impl Help {
                     "{}{}{}",
                     Logger::indent(indentation),
                     Logger::green(format!("{}: ", name).as_str()),
-                    Logger::gray(format!("{}", command.description).as_str()),
+                    Logger::gray(&command.description),
                 )
             );
         }
@@ -76,7 +76,7 @@ impl Help {
                     "{}{}{}",
                     Logger::indent(Some(6)),
                     Logger::green(format!("{}: ", name).as_str()),
-                    Logger::gray(format!("{}", description).as_str()),
+                    Logger::gray(description),
                 )
             );
         }
@@ -87,12 +87,12 @@ impl Help {
     ) -> Vec<&Box<dyn InternalExecutable>> {
         let mut vector: Vec<&Box<dyn InternalExecutable>> = commands.values().collect();
         vector.sort_by_key(|x| &x.get_definition().name);
-        return vector;
+        vector
     }
 
     fn sort_external(commands: &HashMap<String, DevKitCommand>) -> Vec<&DevKitCommand> {
         let mut vector: Vec<&DevKitCommand> = (commands).values().collect();
         vector.sort_by_key(|x| &x.name);
-        return vector;
+        vector
     }
 }

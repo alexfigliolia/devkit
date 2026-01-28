@@ -37,58 +37,58 @@ impl Logger {
 
     pub fn indent(times: Option<i32>) -> String {
         let indentation: i32 = times.unwrap_or(5);
-        return " ".repeat(indentation.try_into().unwrap());
+        " ".repeat(indentation.try_into().unwrap())
     }
 
     pub fn blue(message: &str) -> ColoredString {
-        return message.blue();
+        message.blue()
     }
 
     pub fn blue_bright(message: &str) -> ColoredString {
-        return message.bright_blue().bold();
+        message.bright_blue().bold()
     }
 
     pub fn magenta_bright(message: &str) -> ColoredString {
-        return message.bright_magenta().bold();
+        message.bright_magenta().bold()
     }
 
     pub fn magenta(message: &str) -> ColoredString {
-        return message.magenta();
+        message.magenta()
     }
 
     pub fn green(message: &str) -> ColoredString {
-        return message.green();
+        message.green()
     }
 
     pub fn green_bright(message: &str) -> ColoredString {
-        return message.bright_green();
+        message.bright_green()
     }
 
     pub fn cyan(message: &str) -> ColoredString {
-        return message.cyan();
+        message.cyan()
     }
 
     pub fn cyan_bright(message: &str) -> ColoredString {
-        return message.bright_cyan().bold();
+        message.bright_cyan().bold()
     }
 
     pub fn gray(message: &str) -> ColoredString {
-        return message.custom_color(CustomColor {
+        message.custom_color(CustomColor {
             r: 128,
             g: 128,
             b: 128,
-        });
+        })
     }
 
     fn info_prefix() -> ColoredString {
-        return format!("{}: ", *REGISTERED_NAME.lock().unwrap())
+        format!("{}: ", *REGISTERED_NAME.lock().unwrap())
             .bright_magenta()
-            .bold();
+            .bold()
     }
 
     fn error_prefix() -> ColoredString {
-        return format!("{}: ", *REGISTERED_NAME.lock().unwrap())
+        format!("{}: ", *REGISTERED_NAME.lock().unwrap())
             .red()
-            .bold();
+            .bold()
     }
 }

@@ -53,11 +53,11 @@ impl RegisterCommand {
                 _ => {}
             }
         }
-        return self.validate_path(path);
+        self.validate_path(path)
     }
 
     fn validate_path(&self, path_arg: String) -> PathBuf {
-        if path_arg == "" {
+        if path_arg.is_empty() {
             RegisterCommand::exit_on_missing_path();
         }
         let path = Path::new(&self.root).join(&path_arg).normalize();
@@ -89,7 +89,7 @@ impl RegisterCommand {
             ).as_str());
             process::exit(0);
         }
-        return command_path.clone();
+        command_path.clone()
     }
 
     fn exit_on_missing_path() {
@@ -107,7 +107,7 @@ impl RegisterCommand {
         let dir = Path::new(file_path)
             .parent()
             .expect("Failed to get parent directory");
-        return dir.join("command_template.ts");
+        dir.join("command_template.ts")
     }
 }
 
@@ -118,13 +118,13 @@ impl InternalExecutable for RegisterCommand {
         let mut source = File::open(RegisterCommand::template_path()).expect("Template");
         let mut target = File::create(&command_path).expect("creating");
         io::copy(&mut source, &mut target).expect("writing");
-        (&target).sync_all().expect("Flushing");
+        target.sync_all().expect("Flushing");
         Logger::info("Creating command file");
         Logger::info("Please fill out your command file located at:");
         println!(
             "\n{}{}\n",
             Logger::indent(None),
-            Logger::cyan_bright(&command_path.to_str().expect(""))
+            Logger::cyan_bright(command_path.to_str().expect(""))
         );
     }
 
@@ -133,6 +133,6 @@ impl InternalExecutable for RegisterCommand {
     }
 
     fn get_definition(&self) -> &InternalExecutableDefinition {
-        return &self.definition;
+        &self.definition
     }
 }

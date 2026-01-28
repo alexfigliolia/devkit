@@ -31,7 +31,7 @@ impl LocateCommand {
 
 impl InternalExecutable for LocateCommand {
     fn run(&self, args: Vec<String>) {
-        if args.len() == 0 {
+        if args.is_empty() {
             Logger::exitWithInfo("Please specify a command to locate");
         }
         let command = &args[0];
@@ -60,6 +60,6 @@ impl InternalExecutable for LocateCommand {
     }
 
     fn get_definition(&self) -> &InternalExecutableDefinition {
-        return &self.definition;
+        &self.definition
     }
 }

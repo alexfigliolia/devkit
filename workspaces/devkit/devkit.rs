@@ -41,7 +41,7 @@ impl DevKit {
         ExternalCommands::validate(&internals, &externals);
         if externals.contains_key(&command) {
             let interface = externals.get(&command).expect("exists");
-            if &args.len() <= &0 {
+            if args.len() <= 0 {
                 return self.log_external_command(interface);
             }
             let sub_command = &args[0];
@@ -53,9 +53,9 @@ impl DevKit {
                     &args[1..].join(" ")
                 ));
             }
-            return self.subcommand_not_found(&interface, &sub_command);
+            return self.subcommand_not_found(interface, sub_command);
         }
-        return self.command_not_found(&command, &internals, &externals);
+        self.command_not_found(&command, &internals, &externals)
     }
 
     fn parse(&self) -> (String, Vec<String>) {
@@ -66,7 +66,7 @@ impl DevKit {
         }
         let command = &argv[1];
         let args = &(&argv)[2..];
-        return (command.clone(), args.to_vec());
+        (command.clone(), args.to_vec())
     }
 
     fn internal_commands(&self) -> HashMap<String, Box<dyn InternalExecutable>> {
@@ -74,12 +74,12 @@ impl DevKit {
             Box::new(LocateCommand::new(self.root.clone())),
             Box::new(RegisterCommand::new(self.root.clone())),
         ];
-        return HashMap::from(commands.map(|x| (x.get_definition().name.to_string(), x)));
+        HashMap::from(commands.map(|x| (x.get_definition().name.to_string(), x)))
     }
 
     fn external_commands(&self) -> HashMap<String, DevKitCommand> {
         let finder = ExternalCommands::new(self.root.clone());
-        return executor::block_on(finder.find_all());
+        executor::block_on(finder.find_all())
     }
 
     fn command_not_found(
@@ -91,11 +91,11 @@ impl DevKit {
         Logger::info(
             format!(
                 "I'm not aware of a command named {}",
-                Logger::cyan_bright(&command)
+                Logger::cyan_bright(command)
             )
             .as_str(),
         );
-        Help::list_all(&internals, &externals);
+        Help::list_all(internals, externals);
     }
 
     fn subcommand_not_found(&self, command: &DevKitCommand, sub_command: &str) {
@@ -125,6 +125,6 @@ impl DevKit {
             )
             .as_str(),
         );
-        return Help::print_commands(&command.commands, Some(3));
+        Help::print_commands(&command.commands, Some(3))
     }
 }
