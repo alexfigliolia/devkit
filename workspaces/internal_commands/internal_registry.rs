@@ -3,7 +3,10 @@ use std::collections::HashMap;
 use crate::{
     devkit::interfaces::DevKitConfig,
     executables::intenal_executable::InternalExecutable,
-    internal_commands::{locate_command::LocateCommand, register_command::RegisterCommand},
+    internal_commands::{
+        locate_command::LocateCommand, onboarder::Onboarder, register_command::RegisterCommand,
+        upgrade_devkit::UpgradeDevKit,
+    },
 };
 
 pub struct InternalRegistry {
@@ -20,12 +23,20 @@ impl InternalRegistry {
     }
 
     pub fn get_all(&self) -> HashMap<String, Box<dyn InternalExecutable>> {
-        let internals: [Box<dyn InternalExecutable>; 2] = [
+        let internals: [Box<dyn InternalExecutable>; 4] = [
+            Box::new(Onboarder::new(
+                self.root.clone(),
+                self.configuration.clone(),
+            )),
             Box::new(LocateCommand::new(
                 self.root.clone(),
                 self.configuration.clone(),
             )),
             Box::new(RegisterCommand::new(
+                self.root.clone(),
+                self.configuration.clone(),
+            )),
+            Box::new(UpgradeDevKit::new(
                 self.root.clone(),
                 self.configuration.clone(),
             )),
