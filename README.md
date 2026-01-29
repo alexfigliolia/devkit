@@ -21,7 +21,7 @@ npm i -D typescript && tsc --init
 Next, install devkit:
 
 ```bash
-npm i -D @devkit/cli @devkit/core
+npm i -D @devkit/core
 ```
 
 Devkit will automatically create a config file named `devkit.ts` for you upon installing. Fill out this file with your desired settings.
@@ -33,7 +33,6 @@ import { DevKitConfig } from "@devkit/core";
 
 export const DevKit = new DevKitConfig({
   project: "Devkit",
-  workspaces: ["./src/*", "./workspaces/*"],
   commands: {
     "lint:rust": {
       command: "cargo clippy",

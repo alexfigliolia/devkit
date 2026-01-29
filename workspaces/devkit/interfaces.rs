@@ -28,7 +28,6 @@ impl ParsedCommand {
 #[derive(Debug, Deserialize, Clone)]
 pub struct DevKitConfig {
     pub project: String,
-    pub workspaces: Vec<String>,
     pub commands: HashMap<String, Command>,
 }
 

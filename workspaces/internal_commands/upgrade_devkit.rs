@@ -60,7 +60,7 @@ impl InternalExecutable for UpgradeDevKit {
         Logger::info("Upgrading installation");
         let command_prefix = self.get_package_manager();
         Executor::exec(
-            format!("{} @devkit/cli@latest", command_prefix).as_str(),
+            format!("{} @devkit/core@latest", command_prefix).as_str(),
             |cmd| cmd.current_dir(&self.root),
         );
         Logger::info("Upgrade complete!");

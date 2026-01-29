@@ -6,7 +6,6 @@ import { DevKitConfig } from "@devkit/core";
  */
 export const DevKit = new DevKitConfig({
   project: "Your Project Name",
-  workspaces: ["./workspace-1/*", "./workspace-2/*"],
   commands: {
     "<your-first-command>": {
       command: "<insert shell command here>",

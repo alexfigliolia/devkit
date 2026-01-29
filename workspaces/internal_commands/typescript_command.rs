@@ -19,16 +19,9 @@ impl TypescriptCommand {
         if stdout.is_empty() {
             Configuration::create(root);
         }
-        let DevKitConfig {
-            project,
-            workspaces,
-            commands,
-        } = from_str(stdout.as_str()).expect("Error parsing stdout");
-        DevKitConfig {
-            project,
-            workspaces,
-            commands,
-        }
+        let DevKitConfig { project, commands } =
+            from_str(stdout.as_str()).expect("Error parsing stdout");
+        DevKitConfig { project, commands }
     }
 
     pub fn parse_commands(root: &String, path_list: Vec<String>) -> Vec<DevKitCommand> {

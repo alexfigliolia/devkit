@@ -2,7 +2,6 @@ import { DevKitConfig } from "@devkit/core";
 
 export const DevKit = new DevKitConfig({
   project: "Devkit",
-  workspaces: ["./workspace-1/*", "./workspace-2/*"],
   commands: {
     "lint:rust": {
       command: "cargo clippy",

@@ -1,5 +1,5 @@
 {
-  "name": "devkit",
+  "name": "@devkit/core",
   "version": "1.0.0",
   "description": "Monorepo tools powered by rust",
   "license": "MIT",

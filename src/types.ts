@@ -1,6 +1,5 @@
 export interface IDevKitConfig {
   project: string;
-  workspaces: string[];
   commands?: Record<string, ICommand>;
 }
 
