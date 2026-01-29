@@ -5,7 +5,7 @@ use std::{
     path::Path,
 };
 
-use walkdir::{DirEntry, Error, WalkDir};
+use jwalk::WalkDir;
 
 use crate::{
     concurrency::thread_pool::ThreadPool, devkit::interfaces::DevKitCommand,
@@ -24,19 +24,30 @@ impl ExternalCommands {
     pub async fn find_all(&self) -> HashMap<String, DevKitCommand> {
         let mut paths: Vec<String> = vec![];
         let mut pool = ThreadPool::new(None, None);
-        for entry in WalkDir::new(&self.root)
-            .into_iter()
-            .filter(|e| self.allowed(e))
-            .map(|e| e.ok())
-        {
-            let unwrapped = entry.expect("path");
-            let path = unwrapped.path().to_owned();
-            if path.is_file() && path.extension().map(|ext| ext == "ts").unwrap_or(false) {
-                let clone = path.clone();
-                let async_task = pool.spawn(move || ExternalCommands::read(&path));
-                if async_task.await.unwrap() {
-                    paths.push((clone).into_os_string().into_string().expect("stringify"));
+        for entry in WalkDir::new(&self.root).into_iter().filter_map(|e| {
+            if e.is_err() {
+                return None;
+            }
+            let option = e.ok();
+            match option {
+                Some(file) => {
+                    let path = file.path();
+                    if file.file_type().is_file()
+                        && path.extension().is_some_and(|ext| ext == "ts")
+                        && self.allowed(path.to_str().expect("exists"))
+                    {
+                        return Some(file);
+                    }
+                    None
                 }
+                None => None,
+            }
+        }) {
+            let path = entry.path();
+            let clone = path.clone();
+            let async_task = pool.spawn(move || ExternalCommands::read(&path));
+            if async_task.await.unwrap() {
+                paths.push((clone).into_os_string().into_string().expect("stringify"));
             }
         }
         self.collect_instances(paths)
@@ -63,48 +74,33 @@ impl ExternalCommands {
         false
     }
 
-    fn allowed(&self, entry: &Result<DirEntry, Error>) -> bool {
-        entry.is_ok()
-            && !self.black_list_dirs(
-                entry
-                    .as_ref()
-                    .expect("path")
-                    .path()
-                    .to_str()
-                    .expect("stringify"),
-            )
-    }
-
-    fn black_list_dirs(&self, path: &str) -> bool {
-        let restricted_paths = [".", "node_modules", "target"];
-        let restricted_extensions = [".lock", "internal_commands/command_template.ts"];
+    fn allowed(&self, path: &str) -> bool {
+        let restricted_paths = ["node_modules", "target", "dist"];
+        let restricted_extensions = ["internal_commands/command_template.ts"];
         let relative_path = path.replace(format!("{}/", &self.root).as_str(), "");
         if ExternalCommands::restrict(
             &relative_path,
             &restricted_paths,
             RestrictDirection::Forwards,
         ) {
-            return true;
+            return false;
         }
         if ExternalCommands::restrict(
             &relative_path,
             &restricted_extensions,
             RestrictDirection::Backwards,
         ) {
-            return true;
+            return false;
         }
         let components = relative_path.split('/');
         for token in components {
-            if token.starts_with(".") {
-                return true;
-            }
             for restricted_path in restricted_paths {
                 if token == restricted_path {
-                    return true;
+                    return false;
                 }
             }
         }
-        false
+        true
     }
 
     fn restrict(path: &str, tokens: &[&str], direction: RestrictDirection) -> bool {

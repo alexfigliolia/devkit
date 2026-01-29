@@ -13,9 +13,8 @@ pub struct TypescriptCommand;
 impl TypescriptCommand {
     pub fn parse_configuration(root: &String) -> DevKitConfig {
         let executable = TypescriptCommand::path_to_command("parse_configuration.ts");
-        let stdout = Executor::exec(format!("npx tsx {executable} --root {root}"), |cmd| {
-            cmd.current_dir(Path::new(&root))
-        });
+        let stdout =
+            TypescriptCommand::execute(root, format!("{executable} --root {root}").as_str());
         if stdout.is_empty() {
             Configuration::create(root);
         }
@@ -27,9 +26,8 @@ impl TypescriptCommand {
     pub fn parse_commands(root: &String, path_list: Vec<String>) -> Vec<DevKitCommand> {
         let paths = path_list.join(",");
         let executable = TypescriptCommand::path_to_command("parse_commands.ts");
-        let stdout = Executor::exec(format!("npx tsx {executable} --paths {paths}"), |cmd| {
-            cmd.current_dir(Path::new(root))
-        });
+        let stdout =
+            TypescriptCommand::execute(root, format!("{executable} --paths {paths}").as_str());
         let commands: Vec<DevKitCommand> = serde_json::from_str(&stdout).expect("parse");
         commands
     }
@@ -48,5 +46,11 @@ impl TypescriptCommand {
             .into_os_string()
             .into_string()
             .expect("Cannot construct path")
+    }
+
+    fn execute(root: &str, args: &str) -> String {
+        Executor::exec(format!("npx tsx {}", args), |cmd| {
+            cmd.current_dir(Path::new(&root))
+        })
     }
 }

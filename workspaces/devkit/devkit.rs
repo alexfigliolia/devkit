@@ -39,7 +39,7 @@ impl DevKit {
         if self.configuration.commands.contains_key(&command) {
             let root_script = self.configuration.commands.get(&command).expect("exists");
             return Executor::with_stdio(
-                format!("{}{}", root_script.command, &args.join(" ")),
+                format!("{} {}", root_script.command, &args.join(" ")),
                 |cmd| cmd.current_dir(Path::new(&self.root)),
             );
         }
