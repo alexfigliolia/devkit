@@ -45,66 +45,6 @@ impl ExternalCommands {
         self.collect_instances(paths)
     }
 
-    pub fn detect_collisions_between_internals_and_externals(
-        internals: &HashMap<String, Box<dyn InternalExecutable>>,
-        externals: &HashMap<String, DevKitCommand>,
-    ) {
-        for (name, command) in externals {
-            if internals.contains_key(name) {
-                Logger::info(
-                    format!(
-                        "I encountered a command named {} that conflicts with one of my internals",
-                        Logger::blue_bright(name),
-                    )
-                    .as_str(),
-                );
-                Logger::info("Here's where it's located:");
-                Logger::log_file_path(&command.location);
-                Logger::exitWithInfo("Please rename it");
-            }
-        }
-    }
-
-    pub fn detect_collisions_between_internals_and_root_commands(
-        internals: &HashMap<String, Box<dyn InternalExecutable>>,
-        root_commands: &HashMap<String, Command>,
-    ) {
-        for (name, _) in internals {
-            if root_commands.contains_key(name) {
-                Logger::info(
-                    format!(
-                        "I encountered a command named {} in your {} file that conflicts with one of my internals",
-                        Logger::blue_bright(name),
-                        Logger::blue_bright("devkit.ts"),
-                    )
-                    .as_str(),
-                );
-                Logger::exitWithInfo("Please rename it");
-            }
-        }
-    }
-
-    pub fn detect_collisions_between_root_commands_and_externals(
-        externals: &HashMap<String, DevKitCommand>,
-        root_commands: &HashMap<String, Command>,
-    ) {
-        for (name, command) in externals {
-            if root_commands.contains_key(name) {
-                Logger::info(
-                    format!(
-                        "I encountered a command named {} that conflicts with a command in your {} file",
-                        Logger::blue_bright(name),
-                        Logger::blue_bright("devkit.ts")
-                    )
-                    .as_str(),
-                );
-                Logger::info("Here's where it's located:");
-                Logger::log_file_path(&command.location);
-                Logger::exitWithInfo("Please rename one of these");
-            }
-        }
-    }
-
     fn collect_instances(&self, paths: Vec<String>) -> HashMap<String, DevKitCommand> {
         let mut map = HashMap::new();
         let commands = TypescriptCommand::parse_commands(paths);

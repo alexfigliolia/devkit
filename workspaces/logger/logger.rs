@@ -21,12 +21,12 @@ impl Logger {
         eprintln!("{}{}", Logger::error_prefix(), message);
     }
 
-    pub fn exitWithInfo(message: &str) {
+    pub fn exit_with_info(message: &str) {
         Logger::info(message);
         process::exit(0);
     }
 
-    pub fn exitWithError(message: &str) {
+    pub fn exit_with_error(message: &str) {
         Logger::error(message);
         process::exit(0);
     }

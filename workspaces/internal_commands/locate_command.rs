@@ -32,7 +32,7 @@ impl LocateCommand {
 impl InternalExecutable for LocateCommand {
     fn run(&self, args: Vec<String>) {
         if args.is_empty() {
-            Logger::exitWithInfo("Please specify a command to locate");
+            Logger::exit_with_info("Please specify a command to locate");
         }
         let command = &args[0];
         Logger::info(format!("Locating a command named {}", Logger::blue_bright(command)).as_str());
@@ -42,7 +42,7 @@ impl InternalExecutable for LocateCommand {
             let interface = commands.get(command).expect("exists");
             return Logger::log_file_path(&interface.location);
         }
-        Logger::exitWithError(
+        Logger::exit_with_error(
             format!(
                 "I could not find a command named {}",
                 Logger::blue_bright(command)

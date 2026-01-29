@@ -93,7 +93,7 @@ impl RegisterCommand {
     }
 
     fn exit_on_missing_path() {
-        Logger::exitWithError(
+        Logger::exit_with_error(
                 format!(
                     "Please specify a path to a directory relative to the root of your repository using the {} argument",
                     Logger::blue_bright("--path | -p")

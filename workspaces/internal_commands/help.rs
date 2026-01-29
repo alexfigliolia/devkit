@@ -54,13 +54,10 @@ impl Help {
     pub fn print_commands(map: &HashMap<String, Command>, indentation: Option<i32>) {
         for (name, command) in map {
             println!(
-                "{}",
-                format!(
-                    "{}{}{}",
-                    Logger::indent(indentation),
-                    Logger::green(format!("{}: ", name).as_str()),
-                    Logger::gray(&command.description),
-                )
+                "{}{}{}",
+                Logger::indent(indentation),
+                Logger::green(format!("{}: ", name).as_str()),
+                Logger::gray(&command.description),
             );
         }
     }
@@ -106,13 +103,10 @@ impl Help {
     fn print_args(map: &HashMap<&'static str, &'static str>) {
         for (name, description) in map {
             println!(
-                "{}",
-                format!(
-                    "{}{}{}",
-                    Logger::indent(Some(6)),
-                    Logger::green(format!("{}: ", name).as_str()),
-                    Logger::gray(description),
-                )
+                "{}{}{}",
+                Logger::indent(Some(6)),
+                Logger::green(format!("{}: ", name).as_str()),
+                Logger::gray(description),
             );
         }
     }
