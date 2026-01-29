@@ -1,7 +1,6 @@
 use normalize_path::NormalizePath;
 use std::{
     collections::HashMap,
-    ffi::OsString,
     fs::{File, create_dir_all},
     io,
     path::{Path, PathBuf},
@@ -33,33 +32,18 @@ impl RegisterCommand {
                 name: "register-command",
                 description: "Creates new Devkit commands",
                 args: HashMap::from([(
-                    "--path | -p",
+                    "<path>",
                     "A relative path to your preferred command location",
                 )]),
             },
         }
     }
 
-    fn parse(&self, args: Vec<String>) -> PathBuf {
-        use lexopt::prelude::*;
-        let mut path = String::from("");
-        let mut parser = lexopt::Parser::from_args(args);
-        while let Ok(Some(arg)) = parser.next() {
-            match arg {
-                Short('p') | Long("path") => {
-                    path = parser
-                        .value()
-                        .unwrap_or(OsString::from(""))
-                        .into_string()
-                        .expect("Derp");
-                }
-                _ => {}
-            }
+    fn validate_path(&self, args: Vec<String>) -> PathBuf {
+        if args.is_empty() {
+            RegisterCommand::exit_on_missing_path();
         }
-        self.validate_path(path)
-    }
-
-    fn validate_path(&self, path_arg: String) -> PathBuf {
+        let path_arg = args[0].clone();
         if path_arg.is_empty() {
             RegisterCommand::exit_on_missing_path();
         }
@@ -97,12 +81,8 @@ impl RegisterCommand {
 
     fn exit_on_missing_path() {
         Logger::exit_with_error(
-                format!(
-                    "Please specify a path to a directory relative to the root of your repository using the {} argument",
-                    Logger::blue_bright("--path | -p")
-                )
-                .as_str(),
-            );
+            "Please specify a path to a directory relative to the root of your repository",
+        );
     }
 
     pub fn template_path() -> PathBuf {
@@ -117,7 +97,7 @@ impl RegisterCommand {
 impl InternalExecutable for RegisterCommand {
     fn run(&self, args: Vec<String>) {
         Logger::info("Registering a new command");
-        let command_path = self.parse(args);
+        let command_path = self.validate_path(args);
         let mut source = File::open(RegisterCommand::template_path()).expect("Template");
         let mut target = File::create(&command_path).expect("creating");
         io::copy(&mut source, &mut target).expect("writing");
