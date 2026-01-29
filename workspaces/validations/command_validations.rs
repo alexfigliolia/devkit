@@ -9,10 +9,7 @@ use crate::{
     },
     executables::intenal_executable::InternalExecutable,
     external_commands::external_commands::ExternalCommands,
-    internal_commands::{
-        internal_registry::InternalRegistry, locate_command::LocateCommand,
-        register_command::RegisterCommand,
-    },
+    internal_commands::internal_registry::InternalRegistry,
     logger::logger::Logger,
 };
 

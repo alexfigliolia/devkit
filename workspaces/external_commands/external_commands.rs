@@ -9,10 +9,8 @@ use walkdir::{DirEntry, Error, WalkDir};
 
 use crate::{
     concurrency::thread_pool::ThreadPool,
-    devkit::interfaces::{Command, DevKitCommand},
-    executables::intenal_executable::InternalExecutable,
+    devkit::interfaces::DevKitCommand,
     internal_commands::typescript_command::TypescriptCommand,
-    logger::logger::Logger,
 };
 
 pub struct ExternalCommands {
