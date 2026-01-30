@@ -12,7 +12,17 @@ The Devkit CLI exists as a living source of documentation and knowledge - growin
 
 ### Installation
 
-If you don't have `typescript` setup already in your repository, you can run:
+If you do not have node.js setup in your repository, you'll first want to install node.js.
+
+[NVM is a populat posix compliant installer](https://github.com/nvm-sh/nvm)
+
+Once installed, you can run the following in the root of your repository
+
+```bash
+npm init
+```
+
+If you don't have `typescript` already setup in your repository, you can run:
 
 ```bash
 npm i -D typescript && tsc --init
