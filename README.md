@@ -44,14 +44,6 @@ import { DevKitConfig } from "@devkit/core";
 export const DevKit = new DevKitConfig({
   project: "Devkit",
   commands: {
-    "lint:rust": {
-      command: "cargo clippy",
-      description: "Lints rust files",
-    },
-    "format:rust": {
-      command: "cargo clippy --fix",
-      description: "Formats rust files",
-    },
     "build:rust": {
       command: "cargo build --release",
       description: "Build CLI in production mode",
@@ -107,33 +99,87 @@ The CLI will list out your new tool's API's. To invoke any of them, run:
 devkit <your-tool-name> <your-command-name>
 ```
 
-### Best Practices
+### Reasoning about your toolchain
 
-Use verbose descriptions. Document flags, positionals, and environment variables required to invoke your tool.
+As your toolchain grows, it's possible to find yourself with hundreds, if not thousands of registered commands.
 
-When possible abstract common combinations of arguments into their own command definitions. For example, instead of a single `build` command requiring flags to configure it, create abstractions for each target environment:
+To make reasoning about your commands easier, there are a few internal commands getting to know
+
+#### `devkit search`
+
+`devkit search` is a blanket brute force search over all command definitions. Using it you can search for commands by name, owner, definition, location, or even the tools that in invokes in it's commands.
+
+For example, let's say you wanted to list all commands that invoke `cargo`, you could run
+
+```bash
+devkit search cargo
+```
+
+If you wanted to search for all commands owned by an individual or team you could run
+
+```bash
+devkit search <person or team name>
+```
+
+If you wanted to search for all recursively under a given path you could run
+
+```bash
+devkit search path/within/your/codebase
+```
+
+You can query for just about anything you can imagine
+
+#### `devkit locate`
+
+Code changes can sometimes require updating command definitions. Devkit can easily locate any command's definition by name:
+
+```bash
+devkit locate <your-tool-name>
+```
+
+#### `devkit owners`
+
+If your team makes use of the `owners` attribute when defining your commands, you can easily list all commands owned by an individual or team
+
+```bash
+devkit list <owner>
+```
+
+`devkit` list can also accept `internal | registered | root` as an argument.
+
+`internal` will cause devkit to list out all of its internal commands
+
+`registered` will cause devkit to list out all of the commands your team has defined around your codebase
+
+`root` will cause devkit to list out all commands in your `devkit.ts` config
+
+### Best Practices for Registering Commands
+
+First and most simply - use verbose descriptions. Document flags, positionals, and environment variables required to invoke your tool. The idea behind devkit is to not leave your teammates combing through your code to find these parameters.
+
+If your tool requires arguments, abstract common combinations of arguments into their own sub-commands. For example, instead of a single `build` command requiring flags to configure it, create sub commands that abstract commonly used combinations of parameters:
 
 ```typescript
 import { DevKitCommand } from "@devkit/core";
 
 export const Commands = new DevKitCommand({
-  name: "example-package",
-  owner: "Name of Team or Individual"
-  description: "A package designed to do important things",
+  // ... command definition
   commands: {
     "build:local": {
       command: "bazel build --env development",
-      description: "Builds example-package in development mode",
+      description: "Builds in development mode",
     },
     "build:production": {
       command: "bazel build --progress --stats --env production",
-      description: "Builds example-package in production mode",
+      description: "Builds in production mode",
     },
   },
 });
 ```
 
-### Registered Commands
+When possible, prefer flags and positionals over environment variables. Often times your argv parsers will provide some out-of-the-box validations for free that environment variables simply don't get.
+
+#### Working Directories
 
 The commands you register onto the devkit toolchain will always be invoked using the working directory of the command's definition.
 

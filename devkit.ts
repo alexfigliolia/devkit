@@ -20,7 +20,7 @@ export const DevKit = new DevKitConfig({
       description: "Run CLI in development mode",
     },
     "install:rust": {
-      command: "cargo install --path .",
+      command: "devkit build:rust && cargo install --path .",
       description: "Installs the production CLI and adds it to your path",
     },
     "lint:ts": {

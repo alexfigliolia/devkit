@@ -99,6 +99,7 @@ impl DevKit {
         internals: &HashMap<String, Box<dyn InternalExecutable>>,
         externals: &HashMap<String, DevKitCommand>,
     ) {
+        Help::list_all(&self.configuration.commands, internals, externals);
         Logger::info(
             format!(
                 "I'm not aware of a command named {}",
@@ -106,7 +107,6 @@ impl DevKit {
             )
             .as_str(),
         );
-        Help::list_all(&self.configuration.commands, internals, externals);
     }
 
     fn subcommand_not_found(&self, command: &DevKitCommand, sub_command: &str) {

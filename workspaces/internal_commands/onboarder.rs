@@ -39,7 +39,7 @@ impl InternalExecutable for Onboarder {
         Logger::info(
             format!("As you develop new features in your codebase, you can publish commands, API's, and tools to the {} CLI by running", Logger::blue_bright("Devkit")).as_str()
         );
-        Logger::log_file_path("devkit register-command ./path/to/your-feature");
+        Logger::log_file_path("devkit register ./path/to/your-feature");
         Logger::info(
             "This command creates a tooling definition for your feature in a file collocated to your code",
         );
