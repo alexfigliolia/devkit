@@ -24,7 +24,7 @@ impl LocateCommand {
             root,
             configuration,
             definition: InternalExecutableDefinition {
-                name: "locate-command",
+                name: "locate",
                 description: "Locates command definitions",
                 args: HashMap::from([("<name>", "The name of a registered command")]),
             },

@@ -24,7 +24,7 @@ impl UpgradeDevKit {
             root,
             configuration,
             definition: InternalExecutableDefinition {
-                name: "upgrade-devkit",
+                name: "upgrade",
                 description: "Upgrades your installation of devkit to the latest stable version",
                 args: HashMap::from([]),
             },

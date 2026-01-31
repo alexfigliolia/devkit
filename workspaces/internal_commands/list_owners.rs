@@ -25,7 +25,7 @@ impl ListOwners {
             root,
             configuration,
             definition: InternalExecutableDefinition {
-                name: "list-owners",
+                name: "owners",
                 description: "Lists all registered command owners",
                 args: HashMap::from([]),
             },

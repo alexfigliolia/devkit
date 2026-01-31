@@ -25,7 +25,7 @@ impl ListCommands {
             root,
             configuration,
             definition: InternalExecutableDefinition {
-                name: "list-commands",
+                name: "list",
                 description: "List commands based on their scope of definition",
                 args: HashMap::from([(
                     "<scope>",

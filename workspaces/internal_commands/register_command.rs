@@ -29,7 +29,7 @@ impl RegisterCommand {
             root,
             configuration,
             definition: InternalExecutableDefinition {
-                name: "register-command",
+                name: "register",
                 description: "Creates new Devkit commands",
                 args: HashMap::from([(
                     "<path>",

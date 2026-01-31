@@ -92,7 +92,7 @@ devkit onboard
 To begin building your CLI, you can run:
 
 ```bash
-devkit register-command ./path/to/your/feature
+devkit register ./path/to/your/feature
 ```
 
 This command generates a tool definition for your feature that you can fill out using your tool's API's. When complete, save the file and run:
