@@ -15,10 +15,12 @@
     }
   },
   "scripts": {
+    "build:all": "yarn build:ts && yarn lint:all && yarn install:devkit",
     "build:rust": "cargo build --release",
     "build:ts": "yarn ts-packager -e src",
     "devkit": "yarn build:ts && yarn install:devkit && devkit",
     "install:devkit": "yarn build:rust && cargo install --path .",
+    "lint:all": "devkit format:rust && devkit lint:ts",
     "postinstall": "chmod +x ./install.sh && ./install.sh"
   },
   "devDependencies": {
