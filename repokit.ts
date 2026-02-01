@@ -1,7 +1,7 @@
-import { DevKitConfig } from "@devkit/core";
+import { RepoKitConfig } from "repkit";
 
-export const DevKit = new DevKitConfig({
-  project: "Devkit",
+export const RepoKit = new RepoKitConfig({
+  project: "Repokit",
   commands: {
     "lint:rust": {
       command: "cargo clippy",
@@ -16,11 +16,11 @@ export const DevKit = new DevKitConfig({
       description: "Build CLI in production mode",
     },
     "run:rust": {
-      command: "cargo run --package devkit --bin devkit",
+      command: "cargo run --package repokit --bin repokit",
       description: "Run CLI in development mode",
     },
     "install:rust": {
-      command: "devkit build:rust && cargo install --path .",
+      command: "repokit build:rust && cargo install --path .",
       description: "Installs the production CLI and adds it to your path",
     },
     "lint:ts": {

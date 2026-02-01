@@ -1,2 +1,2 @@
-pub mod devkit;
 pub mod interfaces;
+pub mod repokit;

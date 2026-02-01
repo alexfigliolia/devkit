@@ -2,18 +2,18 @@ import { parseArgs } from "node:util";
 import { join } from "node:path";
 import { existsSync } from "node:fs";
 
-import { DevKitConfig } from "./DevKitConfig";
+import { RepoKitConfig } from "./RepoKitConfig";
 
 export class ConfigurationParser {
   public static async parse() {
     const root = this.parseRoot();
-    const path = join(root, "devkit.ts");
+    const path = join(root, "repokit.ts");
     if (!existsSync(path)) {
       return;
     }
     const config = await import(path);
     for (const key in config) {
-      if (config[key] instanceof DevKitConfig) {
+      if (config[key] instanceof RepoKitConfig) {
         return console.log(JSON.stringify(config[key]));
       }
     }

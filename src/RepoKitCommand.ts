@@ -1,6 +1,6 @@
-import type { ICommand, IDevKitCommand } from "./types";
+import type { ICommand, IRepoKitCommand } from "./types";
 
-export class DevKitCommand {
+export class RepoKitCommand {
   name: string;
   owner: string;
   description: string;
@@ -10,7 +10,7 @@ export class DevKitCommand {
     description,
     owner = "",
     commands = {},
-  }: IDevKitCommand) {
+  }: IRepoKitCommand) {
     this.name = name;
     this.owner = owner;
     this.commands = commands;

@@ -3,24 +3,24 @@ use std::collections::{HashMap, HashSet};
 use alphanumeric_sort::sort_str_slice;
 
 use crate::{
-    devkit::interfaces::{DevKitCommand, DevKitConfig},
     executables::{
         intenal_executable::InternalExecutable,
         internal_executable_definition::InternalExecutableDefinition,
     },
     internal_commands::help::Help,
     logger::logger::Logger,
+    repokit::interfaces::{RepoKitCommand, RepoKitConfig},
     validations::command_validations::CommandValidations,
 };
 
 pub struct ListOwners {
     pub root: String,
-    pub configuration: DevKitConfig,
+    pub configuration: RepoKitConfig,
     pub definition: InternalExecutableDefinition,
 }
 
 impl ListOwners {
-    pub fn new(root: String, configuration: DevKitConfig) -> ListOwners {
+    pub fn new(root: String, configuration: RepoKitConfig) -> ListOwners {
         ListOwners {
             root,
             configuration,
@@ -32,7 +32,7 @@ impl ListOwners {
         }
     }
 
-    fn collect_registered_commands(&self) -> HashMap<String, DevKitCommand> {
+    fn collect_registered_commands(&self) -> HashMap<String, RepoKitCommand> {
         let validators = CommandValidations::new(self.root.clone(), self.configuration.clone());
         validators.collect_and_validate_externals()
     }

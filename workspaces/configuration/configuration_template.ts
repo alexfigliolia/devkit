@@ -1,10 +1,10 @@
-import { DevKitConfig } from "@devkit/core";
+import { RepoKitConfig } from "repkit";
 
 /**
  * Please fill out this config file with your desired
- * devkit settings
+ * repokit settings
  */
-export const DevKit = new DevKitConfig({
+export const RepoKit = new RepoKitConfig({
   project: "Your Project Name",
   commands: {
     "<your-first-command>": {

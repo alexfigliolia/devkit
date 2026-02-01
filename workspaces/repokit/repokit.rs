@@ -6,23 +6,23 @@ use std::{
 };
 
 use crate::{
-    devkit::interfaces::{DevKitCommand, DevKitConfig},
     executables::intenal_executable::InternalExecutable,
     executor::executor::Executor,
     internal_commands::help::Help,
     logger::logger::Logger,
+    repokit::interfaces::{RepoKitCommand, RepoKitConfig},
     validations::command_validations::CommandValidations,
 };
 
-pub struct DevKit {
+pub struct RepoKit {
     pub root: String,
-    pub configuration: DevKitConfig,
+    pub configuration: RepoKitConfig,
 }
 
-impl DevKit {
-    pub fn new(root: String, configuration: DevKitConfig) -> DevKit {
+impl RepoKit {
+    pub fn new(root: String, configuration: RepoKitConfig) -> RepoKit {
         Logger::set_name(&configuration.project);
-        DevKit {
+        RepoKit {
             root,
             configuration,
         }
@@ -82,7 +82,7 @@ impl DevKit {
         &self,
     ) -> (
         HashMap<String, Box<dyn InternalExecutable>>,
-        HashMap<String, DevKitCommand>,
+        HashMap<String, RepoKitCommand>,
     ) {
         let validator = CommandValidations::from(self);
         let internals = validator.collect_and_validate_internals();
@@ -97,7 +97,7 @@ impl DevKit {
         &self,
         command: &str,
         internals: &HashMap<String, Box<dyn InternalExecutable>>,
-        externals: &HashMap<String, DevKitCommand>,
+        externals: &HashMap<String, RepoKitCommand>,
     ) {
         Help::list_all(&self.configuration.commands, internals, externals);
         Logger::info(
@@ -109,7 +109,7 @@ impl DevKit {
         );
     }
 
-    fn subcommand_not_found(&self, command: &DevKitCommand, sub_command: &str) {
+    fn subcommand_not_found(&self, command: &RepoKitCommand, sub_command: &str) {
         Logger::info(
             format!(
                 "The command {} was not found on {}",
@@ -128,7 +128,7 @@ impl DevKit {
         Help::print_commands(&command.commands, Some(3));
     }
 
-    fn log_external_command(&self, command: &DevKitCommand) {
+    fn log_external_command(&self, command: &RepoKitCommand) {
         Logger::info(
             format!(
                 "Listing available commands for {}",

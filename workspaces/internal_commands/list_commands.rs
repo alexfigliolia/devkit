@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 
 use crate::{
-    devkit::interfaces::{DevKitCommand, DevKitConfig},
+    repokit::interfaces::{RepoKitCommand, RepoKitConfig},
     executables::{
         intenal_executable::InternalExecutable,
         internal_executable_definition::InternalExecutableDefinition,
@@ -13,14 +13,14 @@ use crate::{
 
 pub struct ListCommands {
     pub root: String,
-    pub configuration: DevKitConfig,
+    pub configuration: RepoKitConfig,
     pub definition: InternalExecutableDefinition,
 }
 
 static SCOPES: [&str; 4] = ["internal", "registered", "root", "<owner>"];
 
 impl ListCommands {
-    pub fn new(root: String, configuration: DevKitConfig) -> ListCommands {
+    pub fn new(root: String, configuration: RepoKitConfig) -> ListCommands {
         ListCommands {
             root,
             configuration,
@@ -39,7 +39,7 @@ impl ListCommands {
         }
     }
 
-    fn collect_registered_commands(&self) -> HashMap<String, DevKitCommand> {
+    fn collect_registered_commands(&self) -> HashMap<String, RepoKitCommand> {
         let validators = CommandValidations::new(self.root.clone(), self.configuration.clone());
         validators.collect_and_validate_externals()
     }
@@ -75,7 +75,7 @@ impl InternalExecutable for ListCommands {
         let full_query = args.join(" ");
         let full_scope = &full_query.to_lowercase();
         Logger::info("Searching registered commands");
-        let matches: HashMap<String, DevKitCommand> = registered_commands
+        let matches: HashMap<String, RepoKitCommand> = registered_commands
             .iter()
             .filter_map(|(name, x)| {
                 if x.owner.to_lowercase().contains(full_scope) {

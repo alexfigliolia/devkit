@@ -130,22 +130,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d0a5c400df2834b80a4c3327b3aad3a4c4cd4de0629063962b03235697506a28"
 
 [[package]]
-name = "devkit"
-version = "0.1.0"
-dependencies = [
- "alphanumeric-sort",
- "clippy",
- "colored",
- "futures",
- "jwalk",
- "lexopt",
- "normalize-path",
- "serde",
- "serde_json",
- "tokio",
-]
-
-[[package]]
 name = "dirs"
 version = "1.0.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -367,6 +351,22 @@ dependencies = [
  "getrandom",
  "redox_syscall",
  "rust-argon2",
+]
+
+[[package]]
+name = "repokit"
+version = "0.1.0"
+dependencies = [
+ "alphanumeric-sort",
+ "clippy",
+ "colored",
+ "futures",
+ "jwalk",
+ "lexopt",
+ "normalize-path",
+ "serde",
+ "serde_json",
+ "tokio",
 ]
 
 [[package]]

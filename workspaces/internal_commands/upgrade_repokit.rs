@@ -2,7 +2,6 @@ use normalize_path::NormalizePath;
 use std::{collections::HashMap, path::Path, process::exit};
 
 use crate::{
-    devkit::interfaces::DevKitConfig,
     executables::{
         intenal_executable::InternalExecutable,
         internal_executable_definition::InternalExecutableDefinition,
@@ -10,22 +9,23 @@ use crate::{
     executor::executor::Executor,
     internal_commands::help::Help,
     logger::logger::Logger,
+    repokit::interfaces::RepoKitConfig,
 };
 
-pub struct UpgradeDevKit {
+pub struct UpgradeRepoKit {
     pub root: String,
-    pub configuration: DevKitConfig,
+    pub configuration: RepoKitConfig,
     pub definition: InternalExecutableDefinition,
 }
 
-impl UpgradeDevKit {
-    pub fn new(root: String, configuration: DevKitConfig) -> UpgradeDevKit {
-        UpgradeDevKit {
+impl UpgradeRepoKit {
+    pub fn new(root: String, configuration: RepoKitConfig) -> UpgradeRepoKit {
+        UpgradeRepoKit {
             root,
             configuration,
             definition: InternalExecutableDefinition {
                 name: "upgrade",
-                description: "Upgrades your installation of devkit to the latest stable version",
+                description: "Upgrades your installation of repokit to the latest stable version",
                 args: HashMap::from([]),
             },
         }
@@ -49,18 +49,18 @@ impl UpgradeDevKit {
         }
         Logger::info("A node package manager was not detected");
         Logger::info(
-            "To upgrade devkit install the latest version using the package manager of your choosing",
+            "To upgrade repokit install the latest version using the package manager of your choosing",
         );
         exit(0);
     }
 }
 
-impl InternalExecutable for UpgradeDevKit {
+impl InternalExecutable for UpgradeRepoKit {
     fn run(&self, _: Vec<String>, _: &HashMap<String, Box<dyn InternalExecutable>>) {
         Logger::info("Upgrading installation");
         let command_prefix = self.get_package_manager();
         Executor::exec(
-            format!("{} @devkit/core@latest", command_prefix).as_str(),
+            format!("{} repkit@latest", command_prefix).as_str(),
             |cmd| cmd.current_dir(&self.root),
         );
         Logger::info("Upgrade complete!");

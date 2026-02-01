@@ -1,7 +1,7 @@
 {
-  "name": "@devkit/core",
+  "name": "repokit",
   "version": "0.0.1",
-  "description": "Monorepo tools powered by rust",
+  "description": "A knowledgebase for your repository - wrapped in a CLI",
   "license": "MIT",
   "author": "Alex Figliolia",
   "main": "dist/cjs/index.js",
@@ -18,14 +18,14 @@
     "access": "public"
   },
   "scripts": {
-    "build:all": "yarn build:ts && yarn lint:all && yarn install:devkit",
+    "build:all": "yarn build:ts && yarn lint:all && yarn install:repokit",
     "build:rust": "cargo build --release",
     "build:ts": "yarn ts-packager -e src",
-    "devkit": "yarn build:ts && yarn install:devkit && devkit",
-    "install:devkit": "yarn build:rust && cargo install --path .",
-    "lint:all": "devkit format:rust && devkit lint:ts",
+    "install:repokit": "yarn build:rust && cargo install --path .",
+    "lint:all": "repokit format:rust && repokit lint:ts",
     "postinstall": "chmod +x ./install.sh && ./install.sh",
-    "run:dev": "cargo run --package devkit --bin devkit"
+    "repokit": "yarn build:ts && yarn install:repokit && repokit",
+    "run:dev": "cargo run --package repokit --bin repokit"
   },
   "devDependencies": {
     "@figliolia/event-emitter": "^1.1.6",

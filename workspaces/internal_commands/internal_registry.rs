@@ -1,22 +1,22 @@
 use std::collections::HashMap;
 
 use crate::{
-    devkit::interfaces::DevKitConfig,
     executables::intenal_executable::InternalExecutable,
     internal_commands::{
         list_commands::ListCommands, list_owners::ListOwners, locate_command::LocateCommand,
         onboarder::Onboarder, register_command::RegisterCommand, search_commands::SearchCommands,
-        upgrade_devkit::UpgradeDevKit,
+        upgrade_repokit::UpgradeRepoKit,
     },
+    repokit::interfaces::RepoKitConfig,
 };
 
 pub struct InternalRegistry {
     root: String,
-    configuration: DevKitConfig,
+    configuration: RepoKitConfig,
 }
 
 impl InternalRegistry {
-    pub fn new(root: String, configuration: DevKitConfig) -> InternalRegistry {
+    pub fn new(root: String, configuration: RepoKitConfig) -> InternalRegistry {
         InternalRegistry {
             root,
             configuration,
@@ -49,7 +49,7 @@ impl InternalRegistry {
                 self.root.clone(),
                 self.configuration.clone(),
             )),
-            Box::new(UpgradeDevKit::new(
+            Box::new(UpgradeRepoKit::new(
                 self.root.clone(),
                 self.configuration.clone(),
             )),

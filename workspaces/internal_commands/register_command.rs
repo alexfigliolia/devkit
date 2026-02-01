@@ -8,7 +8,7 @@ use std::{
 };
 
 use crate::{
-    devkit::interfaces::DevKitConfig,
+    repokit::interfaces::RepoKitConfig,
     executables::{
         intenal_executable::InternalExecutable,
         internal_executable_definition::InternalExecutableDefinition,
@@ -19,18 +19,18 @@ use crate::{
 
 pub struct RegisterCommand {
     pub root: String,
-    pub configuration: DevKitConfig,
+    pub configuration: RepoKitConfig,
     pub definition: InternalExecutableDefinition,
 }
 
 impl RegisterCommand {
-    pub fn new(root: String, configuration: DevKitConfig) -> RegisterCommand {
+    pub fn new(root: String, configuration: RepoKitConfig) -> RegisterCommand {
         RegisterCommand {
             root,
             configuration,
             definition: InternalExecutableDefinition {
                 name: "register",
-                description: "Creates new Devkit commands",
+                description: "Creates new Repokit commands",
                 args: HashMap::from([(
                     "<path>",
                     "A relative path to your preferred command location",
@@ -72,7 +72,7 @@ impl RegisterCommand {
             );
             Logger::info(format!(
                 "You can append additional commands to the existing {} instance or export another one",
-                Logger::blue_bright("DevKitCommand")
+                Logger::blue_bright("RepoKitCommand")
             ).as_str());
             process::exit(0);
         }

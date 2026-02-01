@@ -5,7 +5,7 @@ import { existsSync } from "node:fs";
 
 import type { ILocatedCommand } from "./types";
 import { TaskPooler } from "./TaskPooler";
-import { DevKitCommand } from "./DevKitCommand";
+import { RepoKitCommand } from "./RepoKitCommand";
 
 export class CommandParser {
   public static async parse() {
@@ -27,7 +27,7 @@ export class CommandParser {
     const commands: ILocatedCommand[] = [];
     const declaredExports = await import(path);
     for (const key in declaredExports) {
-      if (declaredExports[key] instanceof DevKitCommand) {
+      if (declaredExports[key] instanceof RepoKitCommand) {
         commands.push({ ...declaredExports[key].toJSON(), location: path });
       }
     }

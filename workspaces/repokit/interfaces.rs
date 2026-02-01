@@ -26,13 +26,13 @@ impl ParsedCommand {
 }
 
 #[derive(Debug, Deserialize, Clone)]
-pub struct DevKitConfig {
+pub struct RepoKitConfig {
     pub project: String,
     pub commands: HashMap<String, Command>,
 }
 
 #[derive(Debug, Deserialize, Clone)]
-pub struct DevKitCommand {
+pub struct RepoKitCommand {
     pub name: String,
     pub owner: String,
     pub location: String,

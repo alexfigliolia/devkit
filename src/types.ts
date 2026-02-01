@@ -1,9 +1,9 @@
-export interface IDevKitConfig {
+export interface IRepoKitConfig {
   project: string;
   commands?: Record<string, ICommand>;
 }
 
-export interface IDevKitCommand {
+export interface IRepoKitCommand {
   name: string;
   owner?: string;
   description: string;
@@ -15,7 +15,7 @@ export interface ICommand {
   description: string;
 }
 
-export interface ILocatedCommand extends IDevKitCommand {
+export interface ILocatedCommand extends IRepoKitCommand {
   location: string;
 }
 

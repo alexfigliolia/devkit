@@ -4,7 +4,7 @@ use std::{process, sync::LazyLock};
 use colored::{ColoredString, Colorize, CustomColor};
 
 static REGISTERED_NAME: LazyLock<Mutex<String>> =
-    LazyLock::new(|| Mutex::new("Devkit".to_string()));
+    LazyLock::new(|| Mutex::new("Repokit".to_string()));
 
 pub struct Logger {}
 

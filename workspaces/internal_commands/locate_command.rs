@@ -2,7 +2,7 @@ use ::futures::executor;
 use std::{collections::HashMap, process::exit};
 
 use crate::{
-    devkit::interfaces::DevKitConfig,
+    repokit::interfaces::RepoKitConfig,
     executables::{
         intenal_executable::InternalExecutable,
         internal_executable_definition::InternalExecutableDefinition,
@@ -14,12 +14,12 @@ use crate::{
 
 pub struct LocateCommand {
     pub root: String,
-    pub configuration: DevKitConfig,
+    pub configuration: RepoKitConfig,
     pub definition: InternalExecutableDefinition,
 }
 
 impl LocateCommand {
-    pub fn new(root: String, configuration: DevKitConfig) -> LocateCommand {
+    pub fn new(root: String, configuration: RepoKitConfig) -> LocateCommand {
         LocateCommand {
             root,
             configuration,
@@ -44,7 +44,7 @@ impl LocateCommand {
 
     fn search_root(&self, command: &str) {
         if self.configuration.commands.contains_key(command) {
-            Logger::log_file_path(format!("{}/devkit.ts", &self.root).as_str());
+            Logger::log_file_path(format!("{}/repokit.ts", &self.root).as_str());
             exit(0);
         }
     }

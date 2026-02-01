@@ -1,9 +1,9 @@
-import { DevKitCommand } from "@devkit/core";
+import { RepoKitCommand } from "repkit";
 
 /**
  * Please fill out this command file with your desired settings
  */
-export const Commands = new DevKitCommand({
+export const Commands = new RepoKitCommand({
   name: "<Your Package Name>",
   owner: "<Optional Team or Individual>",
   description: "<Your Package Description>",

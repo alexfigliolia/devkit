@@ -11,7 +11,7 @@ pub struct Configuration;
 
 impl Configuration {
     pub fn create(root: &str) {
-        let file_path = format!("{root}/devkit.ts");
+        let file_path = format!("{root}/repokit.ts");
         let path_buf = Path::new(&file_path);
         if path_buf.exists() {
             return;
@@ -24,7 +24,7 @@ impl Configuration {
         Logger::info(
             format!(
                 "Please fill out this file with your desired settings. Then run {}",
-                Logger::blue_bright("devkit onboard")
+                Logger::blue_bright("repokit onboard")
             )
             .as_str(),
         );
@@ -33,7 +33,7 @@ impl Configuration {
     }
 
     fn welcome() {
-        Logger::info("Welcome to Devkit! Let's get you setup");
+        Logger::info("Welcome to Repokit! Let's get you setup");
         Logger::info("Creating your configuration file:");
     }
 

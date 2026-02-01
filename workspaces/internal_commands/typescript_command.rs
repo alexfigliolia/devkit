@@ -5,7 +5,7 @@ use serde_json::from_str;
 
 use crate::{
     configuration::configuration::Configuration,
-    devkit::interfaces::{DevKitCommand, DevKitConfig},
+    repokit::interfaces::{RepoKitCommand, RepoKitConfig},
     executor::executor::Executor,
 };
 
@@ -18,23 +18,23 @@ impl TypescriptCommand {
         TypescriptCommand { root }
     }
 
-    pub fn parse_configuration(&self) -> DevKitConfig {
+    pub fn parse_configuration(&self) -> RepoKitConfig {
         let executable = self.path_to_command("parse_configuration.ts");
         let stdout = self.execute(format!("{executable} --root {}", &self.root).as_str());
         if stdout.is_empty() {
             Configuration::create(&self.root);
         }
-        let DevKitConfig { project, commands } =
+        let RepoKitConfig { project, commands } =
             from_str(stdout.as_str()).expect("Error parsing stdout");
-        DevKitConfig { project, commands }
+        RepoKitConfig { project, commands }
     }
 
-    pub fn parse_commands(&self, path_list: Vec<String>) -> Vec<DevKitCommand> {
+    pub fn parse_commands(&self, path_list: Vec<String>) -> Vec<RepoKitCommand> {
         let paths = path_list.join(",");
         let executable = self.path_to_command("parse_commands.ts");
         let stdout =
             self.execute(format!("{executable} --paths {paths} --root {}", self.root).as_str());
-        let commands: Vec<DevKitCommand> = serde_json::from_str(&stdout).expect("parse");
+        let commands: Vec<RepoKitCommand> = serde_json::from_str(&stdout).expect("parse");
         commands
     }
 

@@ -2,7 +2,7 @@ use alphanumeric_sort::sort_slice_by_str_key;
 use std::collections::HashMap;
 
 use crate::{
-    devkit::interfaces::{Command, DevKitCommand, DevKitConfig},
+    repokit::interfaces::{Command, RepoKitCommand, RepoKitConfig},
     executables::{
         intenal_executable::InternalExecutable,
         internal_executable_definition::InternalExecutableDefinition,
@@ -14,12 +14,12 @@ use crate::{
 
 pub struct SearchCommands {
     pub root: String,
-    pub configuration: DevKitConfig,
+    pub configuration: RepoKitConfig,
     pub definition: InternalExecutableDefinition,
 }
 
 impl SearchCommands {
-    pub fn new(root: String, configuration: DevKitConfig) -> SearchCommands {
+    pub fn new(root: String, configuration: RepoKitConfig) -> SearchCommands {
         SearchCommands {
             root,
             configuration,
@@ -50,7 +50,7 @@ impl SearchCommands {
         false
     }
 
-    fn search_external(&self, query: &str, command: &DevKitCommand) -> bool {
+    fn search_external(&self, query: &str, command: &RepoKitCommand) -> bool {
         if command.name.to_lowercase().contains(query) {
             return true;
         }
@@ -93,7 +93,7 @@ impl SearchCommands {
         }
         Logger::info(
             format!(
-                "Matched {} command{} in your devkit config",
+                "Matched {} command{} in your repokit config",
                 Logger::blue_bright(total.to_string().as_str()),
                 plural_appendage,
             )
@@ -127,7 +127,7 @@ impl SearchCommands {
         );
     }
 
-    fn log_external_results(&self, external_commands: &HashMap<String, DevKitCommand>) {
+    fn log_external_results(&self, external_commands: &HashMap<String, RepoKitCommand>) {
         let total = external_commands.len();
         let plural_appendage = if total == 1 { "" } else { "s" };
         if !external_commands.is_empty() {
@@ -155,7 +155,7 @@ impl InternalExecutable for SearchCommands {
             .collect_and_validate_externals();
         let mut root_results: HashMap<String, Command> = HashMap::new();
         let mut internal_results: HashMap<String, &Box<dyn InternalExecutable>> = HashMap::new();
-        let mut external_results: HashMap<String, DevKitCommand> = HashMap::new();
+        let mut external_results: HashMap<String, RepoKitCommand> = HashMap::new();
         for (command, script) in &self.configuration.commands {
             if self.search_command(&query, script) {
                 root_results.insert(command.clone(), script.clone());

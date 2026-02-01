@@ -3,7 +3,7 @@ use std::collections::HashMap;
 use alphanumeric_sort::{sort_slice_by_str_key, sort_str_slice};
 
 use crate::{
-    devkit::interfaces::{Command, DevKitCommand, ParsedCommand},
+    repokit::interfaces::{Command, RepoKitCommand, ParsedCommand},
     executables::{
         intenal_executable::InternalExecutable,
         internal_executable_definition::InternalExecutableDefinition,
@@ -17,7 +17,7 @@ impl Help {
     pub fn list_all(
         root_commands: &HashMap<String, Command>,
         internals: &HashMap<String, Box<dyn InternalExecutable>>,
-        externals: &HashMap<String, DevKitCommand>,
+        externals: &HashMap<String, RepoKitCommand>,
     ) {
         Help::log_internal_commands(internals);
         Help::log_root_commands(root_commands);
@@ -43,7 +43,7 @@ impl Help {
         );
     }
 
-    pub fn log_external_command(command: &DevKitCommand) {
+    pub fn log_external_command(command: &RepoKitCommand) {
         println!(
             "{}{} {}",
             Logger::indent(Some(3)),
@@ -97,7 +97,7 @@ impl Help {
         println!();
     }
 
-    pub fn log_external_commands(externals: &HashMap<String, DevKitCommand>) {
+    pub fn log_external_commands(externals: &HashMap<String, RepoKitCommand>) {
         if externals.is_empty() {
             return;
         }
@@ -129,8 +129,8 @@ impl Help {
         vector
     }
 
-    fn sort_external(commands: &HashMap<String, DevKitCommand>) -> Vec<&DevKitCommand> {
-        let mut vector: Vec<&DevKitCommand> = (commands).values().collect();
+    fn sort_external(commands: &HashMap<String, RepoKitCommand>) -> Vec<&RepoKitCommand> {
+        let mut vector: Vec<&RepoKitCommand> = (commands).values().collect();
         sort_slice_by_str_key(&mut vector, |x| &x.name);
         vector
     }

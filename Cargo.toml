@@ -1,14 +1,14 @@
 [package]
-name = "devkit"
+name = "repokit"
 version = "0.1.0"
 edition = "2024"
 
 [lib]
-name = "devkit"
+name = "repokit"
 path = "workspaces/main.rs"
 
 [[bin]]
-name = "devkit"
+name = "repokit"
 path = "workspaces/main.rs"
 
 [dependencies]

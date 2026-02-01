@@ -1,3 +1,3 @@
-export * from "./DevKitConfig";
-export * from "./DevKitCommand";
+export * from "./RepoKitConfig";
+export * from "./RepoKitCommand";
 export * from "./types";

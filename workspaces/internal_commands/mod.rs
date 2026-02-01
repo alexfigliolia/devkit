@@ -7,4 +7,4 @@ pub mod onboarder;
 pub mod register_command;
 pub mod search_commands;
 pub mod typescript_command;
-pub mod upgrade_devkit;
+pub mod upgrade_repokit;

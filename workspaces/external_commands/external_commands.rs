@@ -7,8 +7,8 @@ use std::{
 use jwalk::WalkDir;
 
 use crate::{
-    concurrency::thread_pool::ThreadPool, devkit::interfaces::DevKitCommand,
-    internal_commands::typescript_command::TypescriptCommand,
+    concurrency::thread_pool::ThreadPool, internal_commands::typescript_command::TypescriptCommand,
+    repokit::interfaces::RepoKitCommand,
 };
 
 pub struct ExternalCommands {
@@ -20,7 +20,7 @@ impl ExternalCommands {
         ExternalCommands { root }
     }
 
-    pub async fn find_all(&self) -> Vec<DevKitCommand> {
+    pub async fn find_all(&self) -> Vec<RepoKitCommand> {
         let mut paths: Vec<String> = vec![];
         let mut pool = ThreadPool::new(None, None);
         for entry in WalkDir::new(&self.root).into_iter().filter_map(|e| {
@@ -64,7 +64,7 @@ impl ExternalCommands {
         let reader: BufReader<File> = BufReader::new(file);
         for line_result in reader.lines() {
             let line: String = line_result.expect("line");
-            if line.contains("new DevKitCommand(") {
+            if line.contains("new RepoKitCommand(") {
                 return true;
             }
         }

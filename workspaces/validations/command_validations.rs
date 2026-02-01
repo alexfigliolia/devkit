@@ -3,9 +3,9 @@ use std::collections::HashMap;
 use futures::executor;
 
 use crate::{
-    devkit::{
-        devkit::DevKit,
-        interfaces::{DevKitCommand, DevKitConfig},
+    repokit::{
+        repokit::RepoKit,
+        interfaces::{RepoKitCommand, RepoKitConfig},
     },
     executables::intenal_executable::InternalExecutable,
     external_commands::external_commands::ExternalCommands,
@@ -15,18 +15,18 @@ use crate::{
 
 pub struct CommandValidations {
     root: String,
-    configuration: DevKitConfig,
+    configuration: RepoKitConfig,
 }
 
 impl CommandValidations {
-    pub fn new(root: String, configuration: DevKitConfig) -> CommandValidations {
+    pub fn new(root: String, configuration: RepoKitConfig) -> CommandValidations {
         CommandValidations {
             root,
             configuration,
         }
     }
 
-    pub fn from(kit: &DevKit) -> CommandValidations {
+    pub fn from(kit: &RepoKit) -> CommandValidations {
         CommandValidations {
             root: kit.root.clone(),
             configuration: kit.configuration.clone(),
@@ -40,7 +40,7 @@ impl CommandValidations {
         internals
     }
 
-    pub fn collect_and_validate_externals(&self) -> HashMap<String, DevKitCommand> {
+    pub fn collect_and_validate_externals(&self) -> HashMap<String, RepoKitCommand> {
         let finder = ExternalCommands::new(self.root.clone());
         let externals = executor::block_on(finder.find_all());
         self.detect_collisions_between_root_commands_and_externals(&externals)
@@ -48,7 +48,7 @@ impl CommandValidations {
 
     pub fn detect_collisions_between_internals_and_externals(
         internals: &HashMap<String, Box<dyn InternalExecutable>>,
-        externals: &HashMap<String, DevKitCommand>,
+        externals: &HashMap<String, RepoKitCommand>,
     ) {
         for (name, command) in externals {
             if internals.contains_key(name) {
@@ -76,7 +76,7 @@ impl CommandValidations {
                     format!(
                         "I encountered a command named {} in your {} file that conflicts with one of my internals",
                         Logger::blue_bright(name),
-                        Logger::blue_bright("devkit.ts"),
+                        Logger::blue_bright("repokit.ts"),
                     )
                     .as_str(),
                 );
@@ -87,9 +87,9 @@ impl CommandValidations {
 
     fn detect_collisions_between_root_commands_and_externals(
         &self,
-        externals: &Vec<DevKitCommand>,
-    ) -> HashMap<String, DevKitCommand> {
-        let mut map: HashMap<String, DevKitCommand> = HashMap::new();
+        externals: &Vec<RepoKitCommand>,
+    ) -> HashMap<String, RepoKitCommand> {
+        let mut map: HashMap<String, RepoKitCommand> = HashMap::new();
         for command in externals {
             if map.contains_key(&command.name) {
                 let original = map.get(&command.name).expect("existent key");
@@ -103,11 +103,11 @@ impl CommandValidations {
         map
     }
 
-    fn on_external_root_collision(&self, command: &DevKitCommand) {
+    fn on_external_root_collision(&self, command: &RepoKitCommand) {
         Logger::info(format!(
                 "I encountered a package command named {} that conflicts with a command in your {} file",
                 Logger::blue_bright(&command.name),
-                Logger::blue_bright("devkit.ts")
+                Logger::blue_bright("repokit.ts")
             )
             .as_str(),
         );
@@ -116,7 +116,7 @@ impl CommandValidations {
         Logger::exit_with_info("Please rename one of these");
     }
 
-    fn on_external_duplicate_collision(&self, command: &DevKitCommand, collision_path: &str) {
+    fn on_external_duplicate_collision(&self, command: &RepoKitCommand, collision_path: &str) {
         Logger::info(
             format!(
                 "I encountered two packages with the name {}",
