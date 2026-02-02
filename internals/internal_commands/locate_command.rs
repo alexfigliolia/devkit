@@ -2,7 +2,6 @@ use ::futures::executor;
 use std::{collections::HashMap, process::exit};
 
 use crate::{
-    repokit::interfaces::RepoKitConfig,
     executables::{
         intenal_executable::InternalExecutable,
         internal_executable_definition::InternalExecutableDefinition,
@@ -10,6 +9,7 @@ use crate::{
     external_commands::external_commands::ExternalCommands,
     internal_commands::help::Help,
     logger::logger::Logger,
+    repokit::interfaces::RepoKitConfig,
 };
 
 pub struct LocateCommand {
