@@ -65,6 +65,8 @@ export const RepoKit = new RepoKitConfig({
 });
 ```
 
+Commands are optional, but your `repokit.ts` config is a good place to store any commonly run commands that aren't specific to any library or package in your repository.
+
 To verify your configuration, run
 
 ```bash
