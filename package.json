@@ -9,7 +9,7 @@
     "type": "git",
     "url": "git+https://github.com/alexfigliolia/repokit.git"
   },
-  "main": "src/index.ts",
+  "main": "externals/index.ts",
   "publishConfig": {
     "access": "public"
   },

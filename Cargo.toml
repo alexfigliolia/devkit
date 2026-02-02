@@ -3,13 +3,9 @@ name = "repokit"
 version = "0.1.0"
 edition = "2024"
 
-[lib]
-name = "repokit"
-path = "workspaces/main.rs"
-
 [[bin]]
 name = "repokit"
-path = "workspaces/main.rs"
+path = "internals/main.rs"
 
 [dependencies]
 serde = { version = "1.0", features = ["derive"] }

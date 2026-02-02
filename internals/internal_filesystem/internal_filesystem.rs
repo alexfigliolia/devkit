@@ -23,11 +23,11 @@ impl InternalFileSystem {
     }
 
     fn commands_directory() -> PathBuf {
-        InternalFileSystem::absolute("./src/commands")
+        InternalFileSystem::absolute("./externals/commands")
     }
 
     fn templates_directory() -> PathBuf {
-        InternalFileSystem::absolute("./src/templates")
+        InternalFileSystem::absolute("./externals/templates")
     }
 
     fn path_buf_to_str(buffer: PathBuf) -> String {

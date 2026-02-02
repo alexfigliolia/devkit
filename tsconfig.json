@@ -18,7 +18,7 @@
     "moduleDetection": "force",
     "skipLibCheck": true,
     "paths": {
-      "@repokit/core": ["./src/index.ts"]
+      "@repokit/core": ["./externals/index.ts"]
     }
   }
 }
