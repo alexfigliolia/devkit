@@ -4,11 +4,12 @@ use std::{
     path::Path,
 };
 
+use futures::{TryStreamExt, stream::FuturesUnordered};
 use jwalk::WalkDir;
+use tokio_thread_pool::ThreadPool;
 
 use crate::{
-    concurrency::thread_pool::ThreadPool, internal_commands::typescript_command::TypescriptCommand,
-    repokit::interfaces::RepoKitCommand,
+    internal_commands::typescript_command::TypescriptCommand, repokit::interfaces::RepoKitCommand,
 };
 
 pub struct ExternalCommands {
@@ -21,8 +22,8 @@ impl ExternalCommands {
     }
 
     pub async fn find_all(&self) -> Vec<RepoKitCommand> {
-        let mut paths: Vec<String> = vec![];
-        let mut pool = ThreadPool::new(None, None);
+        let mut futures = FuturesUnordered::new();
+        let mut pool = ThreadPool::new(None, None, None);
         for entry in WalkDir::new(&self.root).into_iter().filter_map(|e| {
             if e.is_err() {
                 return None;
@@ -43,16 +44,23 @@ impl ExternalCommands {
             }
         }) {
             let path = entry.path();
-            let clone = path.clone();
-            let async_task = pool.spawn(move || ExternalCommands::read(&path));
-            if async_task.await.unwrap() {
+            futures.push(pool.spawn(move || {
+                if ExternalCommands::read(&path) {
+                    return Some(path.clone());
+                }
+                None
+            }));
+        }
+        let mut paths: Vec<String> = Vec::new();
+        while let Ok(Some(buffer)) = futures.try_next().await {
+            if let Some(path) = buffer {
                 paths.push(
-                    (clone)
+                    (path)
                         .into_os_string()
                         .into_string()
                         .expect("stringify")
                         .replace(&self.root, ""),
-                );
+                )
             }
         }
         pool.pool.shutdown_background();

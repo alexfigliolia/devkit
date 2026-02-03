@@ -1,6 +1,6 @@
 {
   "name": "@repokit/core",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "A knowledgebase for your repository - wrapped in a CLI",
   "keywords": [
     "cli",
@@ -22,7 +22,7 @@
   "scripts": {
     "build:all": "yarn lint:ts && yarn lint:rust && yarn install:repokit",
     "build:rust": "cargo build --release",
-    "install:repokit": "yarn build:rust && cargo install --path .",
+    "install:rust": "yarn build:rust && cargo install --path .",
     "lint:rust": "cargo clippy --fix --allow-dirty",
     "lint:ts": "yarn oxlint --type-aware --type-check --report-unused-disable-directives --fix && yarn oxfmt",
     "postinstall": "chmod +x ./install.sh && ./install.sh",

@@ -3,7 +3,6 @@ use crate::{
     repokit::repokit::RepoKit,
 };
 
-mod concurrency;
 mod configuration;
 mod executables;
 mod executor;
