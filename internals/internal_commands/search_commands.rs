@@ -2,13 +2,15 @@ use alphanumeric_sort::sort_slice_by_str_key;
 use std::collections::HashMap;
 
 use crate::{
-    repokit::interfaces::{Command, RepoKitCommand, RepoKitConfig},
     executables::{
         intenal_executable::InternalExecutable,
-        internal_executable_definition::InternalExecutableDefinition,
+        internal_executable_definition::{
+            InternalExecutableDefinition, InternalExecutableDefinitionInput,
+        },
     },
     internal_commands::help::Help,
     logger::logger::Logger,
+    repokit::interfaces::{CommandDefinition, RepoKitCommand, RepoKitConfig},
     validations::command_validations::CommandValidations,
 };
 
@@ -23,14 +25,14 @@ impl SearchCommands {
         SearchCommands {
             root,
             configuration,
-            definition: InternalExecutableDefinition {
+            definition: InternalExecutableDefinition::define(InternalExecutableDefinitionInput {
                 name: "search",
                 description: "Retrieve commands that match any search query",
-                args: HashMap::from([(
+                args: [(
                     "<query>",
                     "A search string to match against command names, descriptions, arguments, or owner",
-                )]),
-            },
+                )],
+            }),
         }
     }
 
@@ -42,11 +44,16 @@ impl SearchCommands {
         if config.description.to_lowercase().contains(query) {
             return true;
         }
-        for (arg, description) in &config.args {
-            if arg.to_lowercase().contains(query) || description.to_lowercase().contains(query) {
-                return true;
+        if let Some(args) = &config.args {
+            for (arg, description) in args {
+                if arg.to_lowercase().contains(query)
+                    || description.to_lowercase().contains(query)
+                {
+                    return true;
+                }
             }
         }
+
         false
     }
 
@@ -76,7 +83,7 @@ impl SearchCommands {
         false
     }
 
-    fn search_command(&self, query: &str, command: &Command) -> bool {
+    fn search_command(&self, query: &str, command: &CommandDefinition) -> bool {
         if command.command.to_lowercase().contains(query)
             || command.description.to_lowercase().contains(query)
         {
@@ -85,7 +92,7 @@ impl SearchCommands {
         false
     }
 
-    fn log_root_results(&self, root_results: &HashMap<String, Command>) {
+    fn log_root_results(&self, root_results: &HashMap<String, CommandDefinition>) {
         let total = root_results.len();
         let plural_appendage = if total == 1 { "" } else { "s" };
         if !root_results.is_empty() {
@@ -153,7 +160,7 @@ impl InternalExecutable for SearchCommands {
         let query = args.join(" ").to_lowercase();
         let externals = CommandValidations::new(self.root.clone(), self.configuration.clone())
             .collect_and_validate_externals();
-        let mut root_results: HashMap<String, Command> = HashMap::new();
+        let mut root_results: HashMap<String, CommandDefinition> = HashMap::new();
         let mut internal_results: HashMap<String, &Box<dyn InternalExecutable>> = HashMap::new();
         let mut external_results: HashMap<String, RepoKitCommand> = HashMap::new();
         for (command, script) in &self.configuration.commands {

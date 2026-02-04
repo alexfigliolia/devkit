@@ -13,6 +13,7 @@ export interface IRepoKitCommand {
 export interface ICommand {
   command: string;
   description: string;
+  args?: Record<string, string>;
 }
 
 export interface ILocatedCommand extends IRepoKitCommand {

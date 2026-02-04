@@ -10,6 +10,10 @@ export const RepoKit = new RepoKitConfig({
     "format:rust": {
       command: "cargo clippy --fix --allow-dirty",
       description: "Formats rust files",
+      args: {
+        "--fix | -f":
+          "Whether to apply fixable code changes detected by the linter",
+      },
     },
     "build:rust": {
       command: "cargo build --release",

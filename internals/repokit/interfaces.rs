@@ -3,22 +3,25 @@ use std::collections::HashMap;
 use serde::Deserialize;
 
 #[derive(Debug, Deserialize, Clone)]
-pub struct Command {
+pub struct CommandDefinition {
     pub command: String,
     pub description: String,
+    pub args: Option<HashMap<String, String>>,
 }
 
 #[derive(Debug, Deserialize, Clone)]
-pub struct ParsedCommand {
+pub struct RootCommand {
     pub name: String,
     pub command: String,
     pub description: String,
+    pub args: Option<HashMap<String, String>>,
 }
 
-impl ParsedCommand {
-    pub fn from(name: &str, command: &Command) -> ParsedCommand {
-        ParsedCommand {
+impl RootCommand {
+    pub fn from(name: &str, command: &CommandDefinition) -> RootCommand {
+        RootCommand {
             name: name.to_string(),
+            args: command.args.clone(),
             command: command.command.to_string(),
             description: command.description.to_string(),
         }
@@ -28,7 +31,7 @@ impl ParsedCommand {
 #[derive(Debug, Deserialize, Clone)]
 pub struct RepoKitConfig {
     pub project: String,
-    pub commands: HashMap<String, Command>,
+    pub commands: HashMap<String, CommandDefinition>,
 }
 
 #[derive(Debug, Deserialize, Clone)]
@@ -37,5 +40,5 @@ pub struct RepoKitCommand {
     pub owner: String,
     pub location: String,
     pub description: String,
-    pub commands: HashMap<String, Command>,
+    pub commands: HashMap<String, CommandDefinition>,
 }

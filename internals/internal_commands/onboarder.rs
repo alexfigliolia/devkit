@@ -3,7 +3,9 @@ use std::collections::HashMap;
 use crate::{
     executables::{
         intenal_executable::InternalExecutable,
-        internal_executable_definition::InternalExecutableDefinition,
+        internal_executable_definition::{
+            InternalExecutableDefinition, InternalExecutableDefinitionInput,
+        },
     },
     internal_commands::help::Help,
     logger::logger::Logger,
@@ -21,11 +23,11 @@ impl Onboarder {
         Onboarder {
             root,
             configuration,
-            definition: InternalExecutableDefinition {
+            definition: InternalExecutableDefinition::define(InternalExecutableDefinitionInput {
                 name: "onboard",
                 description: "Onboarding instructions for first time users",
-                args: HashMap::from([]),
-            },
+                args: [],
+            }),
         }
     }
 }

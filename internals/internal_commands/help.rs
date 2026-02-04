@@ -3,19 +3,19 @@ use std::collections::HashMap;
 use alphanumeric_sort::{sort_slice_by_str_key, sort_str_slice};
 
 use crate::{
-    repokit::interfaces::{Command, RepoKitCommand, ParsedCommand},
     executables::{
         intenal_executable::InternalExecutable,
         internal_executable_definition::InternalExecutableDefinition,
     },
     logger::logger::Logger,
+    repokit::interfaces::{CommandDefinition, RepoKitCommand, RootCommand},
 };
 
 pub struct Help;
 
 impl Help {
     pub fn list_all(
-        root_commands: &HashMap<String, Command>,
+        root_commands: &HashMap<String, CommandDefinition>,
         internals: &HashMap<String, Box<dyn InternalExecutable>>,
         externals: &HashMap<String, RepoKitCommand>,
     ) {
@@ -28,29 +28,31 @@ impl Help {
         println!(
             "{}{} {}",
             Logger::indent(Some(3)),
-            Logger::blue_bright(command.name),
-            Logger::gray(command.description),
+            Logger::blue(&command.name),
+            Logger::gray(&command.description),
         );
-        Help::print_args(&command.args);
+        Help::log_args(&command.args, None);
     }
 
-    pub fn log_root_command(command: &ParsedCommand) {
+    pub fn log_root_command(command: &RootCommand) {
         println!(
             "{}{} {}",
             Logger::indent(Some(3)),
             Logger::blue(&command.name),
             Logger::gray(&command.description),
         );
+        Help::log_args(&command.args, None)
     }
 
     pub fn log_external_command(command: &RepoKitCommand) {
         println!(
             "{}{} {}",
             Logger::indent(Some(3)),
-            Logger::blue_bright(&command.name),
+            Logger::blue(&command.name),
             Logger::gray(&command.description),
         );
-        Help::print_commands(&command.commands, Some(6));
+        println!();
+        Help::log_external_subcommands(&command.commands, 6);
         if !command.owner.is_empty() {
             println!(
                 "\n{}{}{}",
@@ -61,14 +63,15 @@ impl Help {
         }
     }
 
-    pub fn print_commands(map: &HashMap<String, Command>, indentation: Option<i32>) {
+    pub fn log_external_subcommands(map: &HashMap<String, CommandDefinition>, indentation: i32) {
         for (name, command) in map {
             println!(
                 "{}{}{}",
-                Logger::indent(indentation),
-                Logger::green(format!("{}: ", name).as_str()),
+                Logger::indent(Some(indentation)),
+                Logger::lime(format!("{}: ", name).as_str()),
                 Logger::gray(&command.description),
             );
+            Help::log_args(&command.args, Some(indentation + 3));
         }
     }
 
@@ -84,7 +87,7 @@ impl Help {
         }
     }
 
-    pub fn log_root_commands(root_commands: &HashMap<String, Command>) {
+    pub fn log_root_commands(root_commands: &HashMap<String, CommandDefinition>) {
         if root_commands.is_empty() {
             return;
         }
@@ -110,14 +113,16 @@ impl Help {
         }
     }
 
-    fn print_args(map: &HashMap<&'static str, &'static str>) {
-        for (name, description) in map {
-            println!(
-                "{}{}{}",
-                Logger::indent(Some(6)),
-                Logger::green(format!("{}: ", name).as_str()),
-                Logger::gray(description),
-            );
+    fn log_args(map: &Option<HashMap<String, String>>, indentation: Option<i32>) {
+        if let Some(args) = map {
+            for (name, description) in args {
+                println!(
+                    "{}{}{}",
+                    Logger::indent(Some(indentation.unwrap_or(6))),
+                    Logger::green(name.as_str()),
+                    Logger::gray(format!(": {}", description).as_str()),
+                );
+            }
         }
     }
 
@@ -135,12 +140,12 @@ impl Help {
         vector
     }
 
-    fn sort_root_commands(commands: &HashMap<String, Command>) -> Vec<ParsedCommand> {
+    fn sort_root_commands(commands: &HashMap<String, CommandDefinition>) -> Vec<RootCommand> {
         let mut vector: Vec<&String> = (commands).keys().collect();
         sort_str_slice(&mut vector);
         vector
             .iter()
-            .map(|&name| ParsedCommand::from(name, commands.get(name).expect("known keys only")))
+            .map(|&name| RootCommand::from(name, commands.get(name).expect("known keys only")))
             .collect()
     }
 }

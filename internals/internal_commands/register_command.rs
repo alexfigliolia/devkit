@@ -10,7 +10,9 @@ use std::{
 use crate::{
     executables::{
         intenal_executable::InternalExecutable,
-        internal_executable_definition::InternalExecutableDefinition,
+        internal_executable_definition::{
+            InternalExecutableDefinition, InternalExecutableDefinitionInput,
+        },
     },
     internal_commands::help::Help,
     internal_filesystem::internal_filesystem::InternalFileSystem,
@@ -29,14 +31,14 @@ impl RegisterCommand {
         RegisterCommand {
             root,
             configuration,
-            definition: InternalExecutableDefinition {
+            definition: InternalExecutableDefinition::define(InternalExecutableDefinitionInput {
                 name: "register",
                 description: "Creates new Repokit commands",
-                args: HashMap::from([(
+                args: [(
                     "<path>",
                     "A relative path to your preferred command location",
-                )]),
-            },
+                )],
+            }),
         }
     }
 

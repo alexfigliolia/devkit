@@ -84,6 +84,14 @@ impl Logger {
         })
     }
 
+    pub fn lime(message: &str) -> ColoredString {
+        message.custom_color(CustomColor {
+            r: 175,
+            g: 247,
+            b: 7,
+        })
+    }
+
     fn info_prefix() -> ColoredString {
         format!("{}: ", *REGISTERED_NAME.lock().unwrap())
             .bright_magenta()

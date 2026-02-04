@@ -125,17 +125,18 @@ impl RepoKit {
             )
             .as_str(),
         );
-        Help::print_commands(&command.commands, Some(3));
+        Help::log_external_subcommands(&command.commands, 3);
     }
 
     fn log_external_command(&self, command: &RepoKitCommand) {
         Logger::info(
             format!(
-                "Listing available commands for {}",
-                Logger::blue_bright(&command.name)
+                "Listing available commands for {}\n",
+                Logger::blue(&command.name)
             )
             .as_str(),
         );
-        Help::print_commands(&command.commands, Some(3))
+        Help::log_external_subcommands(&command.commands, 3);
+        println!();
     }
 }

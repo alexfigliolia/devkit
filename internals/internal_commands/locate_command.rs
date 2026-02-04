@@ -4,7 +4,9 @@ use std::{collections::HashMap, process::exit};
 use crate::{
     executables::{
         intenal_executable::InternalExecutable,
-        internal_executable_definition::InternalExecutableDefinition,
+        internal_executable_definition::{
+            InternalExecutableDefinition, InternalExecutableDefinitionInput,
+        },
     },
     external_commands::external_commands::ExternalCommands,
     internal_commands::help::Help,
@@ -23,11 +25,11 @@ impl LocateCommand {
         LocateCommand {
             root,
             configuration,
-            definition: InternalExecutableDefinition {
+            definition: InternalExecutableDefinition::define(InternalExecutableDefinitionInput {
                 name: "locate",
                 description: "Locates command definitions",
-                args: HashMap::from([("<name>", "The name of a registered command")]),
-            },
+                args: [("<name>", "The name of a registered command")],
+            }),
         }
     }
 

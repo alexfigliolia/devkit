@@ -4,7 +4,9 @@ use std::{collections::HashMap, path::Path, process::exit};
 use crate::{
     executables::{
         intenal_executable::InternalExecutable,
-        internal_executable_definition::InternalExecutableDefinition,
+        internal_executable_definition::{
+            InternalExecutableDefinition, InternalExecutableDefinitionInput,
+        },
     },
     executor::executor::Executor,
     internal_commands::help::Help,
@@ -23,11 +25,11 @@ impl UpgradeRepoKit {
         UpgradeRepoKit {
             root,
             configuration,
-            definition: InternalExecutableDefinition {
+            definition: InternalExecutableDefinition::define(InternalExecutableDefinitionInput {
                 name: "upgrade",
                 description: "Upgrades your installation of repokit to the latest stable version",
-                args: HashMap::from([]),
-            },
+                args: [],
+            }),
         }
     }
 

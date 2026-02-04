@@ -5,7 +5,9 @@ use alphanumeric_sort::sort_str_slice;
 use crate::{
     executables::{
         intenal_executable::InternalExecutable,
-        internal_executable_definition::InternalExecutableDefinition,
+        internal_executable_definition::{
+            InternalExecutableDefinition, InternalExecutableDefinitionInput,
+        },
     },
     internal_commands::help::Help,
     logger::logger::Logger,
@@ -24,11 +26,11 @@ impl ListOwners {
         ListOwners {
             root,
             configuration,
-            definition: InternalExecutableDefinition {
+            definition: InternalExecutableDefinition::define(InternalExecutableDefinitionInput {
                 name: "owners",
                 description: "Lists all registered command owners",
-                args: HashMap::from([]),
-            },
+                args: [],
+            }),
         }
     }
 

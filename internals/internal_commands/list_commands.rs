@@ -1,13 +1,15 @@
 use std::collections::HashMap;
 
 use crate::{
-    repokit::interfaces::{RepoKitCommand, RepoKitConfig},
     executables::{
         intenal_executable::InternalExecutable,
-        internal_executable_definition::InternalExecutableDefinition,
+        internal_executable_definition::{
+            InternalExecutableDefinition, InternalExecutableDefinitionInput,
+        },
     },
     internal_commands::help::Help,
     logger::logger::Logger,
+    repokit::interfaces::{RepoKitCommand, RepoKitConfig},
     validations::command_validations::CommandValidations,
 };
 
@@ -24,18 +26,18 @@ impl ListCommands {
         ListCommands {
             root,
             configuration,
-            definition: InternalExecutableDefinition {
+            definition: InternalExecutableDefinition::define(InternalExecutableDefinitionInput {
                 name: "list",
                 description: "List commands based on their scope of definition",
-                args: HashMap::from([(
+                args: [(
                     "<scope>",
                     format!(
                         "The scope of the commands you wish to list. Specify one of {}",
                         Logger::blue(SCOPES.join(" | ").as_str())
                     )
-                    .leak() as &'static str,
-                )]),
-            },
+                    .as_str(),
+                )],
+            }),
         }
     }
 
