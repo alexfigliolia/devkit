@@ -1,10 +1,13 @@
 import type { ICommand, IRepoKitConfig } from "./types";
+import type { RepoKitCommand } from "./RepoKitCommand";
 
 export class RepoKitConfig implements Required<IRepoKitConfig> {
   project: string;
+  thirdParty: RepoKitCommand[];
   commands: Record<string, ICommand>;
-  constructor({ project, commands = {} }: IRepoKitConfig) {
+  constructor({ project, commands = {}, thirdParty = [] }: IRepoKitConfig) {
     this.project = project;
     this.commands = commands;
+    this.thirdParty = thirdParty;
   }
 }

@@ -1,58 +1,36 @@
 use std::collections::HashMap;
 
 use crate::{
-    executables::intenal_executable::InternalExecutable,
+    executables::{
+        intenal_executable::InternalExecutable, internal_executable_definition::RepoKitScope,
+    },
     internal_commands::{
         list_commands::ListCommands, list_owners::ListOwners, locate_command::LocateCommand,
         onboarder::Onboarder, register_command::RegisterCommand, search_commands::SearchCommands,
         upgrade_repokit::UpgradeRepoKit,
     },
-    repokit::interfaces::RepoKitConfig,
 };
 
 pub struct InternalRegistry {
-    root: String,
-    configuration: RepoKitConfig,
+    scope: RepoKitScope,
 }
 
 impl InternalRegistry {
-    pub fn new(root: String, configuration: RepoKitConfig) -> InternalRegistry {
+    pub fn new(scope: &RepoKitScope) -> InternalRegistry {
         InternalRegistry {
-            root,
-            configuration,
+            scope: scope.clone(),
         }
     }
 
     pub fn get_all(&self) -> HashMap<String, Box<dyn InternalExecutable>> {
         let internals: [Box<dyn InternalExecutable>; 7] = [
-            Box::new(Onboarder::new(
-                self.root.clone(),
-                self.configuration.clone(),
-            )),
-            Box::new(ListCommands::new(
-                self.root.clone(),
-                self.configuration.clone(),
-            )),
-            Box::new(SearchCommands::new(
-                self.root.clone(),
-                self.configuration.clone(),
-            )),
-            Box::new(ListOwners::new(
-                self.root.clone(),
-                self.configuration.clone(),
-            )),
-            Box::new(LocateCommand::new(
-                self.root.clone(),
-                self.configuration.clone(),
-            )),
-            Box::new(RegisterCommand::new(
-                self.root.clone(),
-                self.configuration.clone(),
-            )),
-            Box::new(UpgradeRepoKit::new(
-                self.root.clone(),
-                self.configuration.clone(),
-            )),
+            Box::new(Onboarder::new(&self.scope)),
+            Box::new(ListCommands::new(&self.scope)),
+            Box::new(SearchCommands::new(&self.scope)),
+            Box::new(ListOwners::new(&self.scope)),
+            Box::new(LocateCommand::new(&self.scope)),
+            Box::new(RegisterCommand::new(&self.scope)),
+            Box::new(UpgradeRepoKit::new(&self.scope)),
         ];
         HashMap::from(internals.map(|x| (x.get_definition().name.to_string(), x)))
     }

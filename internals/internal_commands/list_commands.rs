@@ -4,28 +4,26 @@ use crate::{
     executables::{
         intenal_executable::InternalExecutable,
         internal_executable_definition::{
-            InternalExecutableDefinition, InternalExecutableDefinitionInput,
+            InternalExecutableDefinition, InternalExecutableDefinitionInput, RepoKitScope,
         },
     },
     internal_commands::help::Help,
     logger::logger::Logger,
-    repokit::interfaces::{RepoKitCommand, RepoKitConfig},
+    repokit::interfaces::RepoKitCommand,
     validations::command_validations::CommandValidations,
 };
 
 pub struct ListCommands {
-    pub root: String,
-    pub configuration: RepoKitConfig,
+    pub scope: RepoKitScope,
     pub definition: InternalExecutableDefinition,
 }
 
 static SCOPES: [&str; 4] = ["internal", "registered", "root", "<owner>"];
 
 impl ListCommands {
-    pub fn new(root: String, configuration: RepoKitConfig) -> ListCommands {
+    pub fn new(scope: &RepoKitScope) -> ListCommands {
         ListCommands {
-            root,
-            configuration,
+            scope: scope.clone(),
             definition: InternalExecutableDefinition::define(InternalExecutableDefinitionInput {
                 name: "list",
                 description: "List commands based on their scope of definition",
@@ -42,7 +40,7 @@ impl ListCommands {
     }
 
     fn collect_registered_commands(&self) -> HashMap<String, RepoKitCommand> {
-        let validators = CommandValidations::new(self.root.clone(), self.configuration.clone());
+        let validators = CommandValidations::new(&self.scope);
         validators.collect_and_validate_externals()
     }
 
@@ -68,7 +66,7 @@ impl InternalExecutable for ListCommands {
             return Help::log_internal_commands(internals);
         }
         if scope == SCOPES[2] {
-            return Help::log_root_commands(&self.configuration.commands);
+            return Help::log_root_commands(&self.scope.configuration.commands);
         }
         let registered_commands = self.collect_registered_commands();
         if scope == SCOPES[1] {

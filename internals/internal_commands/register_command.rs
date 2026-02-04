@@ -11,26 +11,23 @@ use crate::{
     executables::{
         intenal_executable::InternalExecutable,
         internal_executable_definition::{
-            InternalExecutableDefinition, InternalExecutableDefinitionInput,
+            InternalExecutableDefinition, InternalExecutableDefinitionInput, RepoKitScope,
         },
     },
     internal_commands::help::Help,
     internal_filesystem::internal_filesystem::InternalFileSystem,
     logger::logger::Logger,
-    repokit::interfaces::RepoKitConfig,
 };
 
 pub struct RegisterCommand {
-    pub root: String,
-    pub configuration: RepoKitConfig,
+    pub scope: RepoKitScope,
     pub definition: InternalExecutableDefinition,
 }
 
 impl RegisterCommand {
-    pub fn new(root: String, configuration: RepoKitConfig) -> RegisterCommand {
+    pub fn new(scope: &RepoKitScope) -> RegisterCommand {
         RegisterCommand {
-            root,
-            configuration,
+            scope: scope.clone(),
             definition: InternalExecutableDefinition::define(InternalExecutableDefinitionInput {
                 name: "register",
                 description: "Creates new Repokit commands",
@@ -50,7 +47,7 @@ impl RegisterCommand {
         if path_arg.is_empty() {
             RegisterCommand::exit_on_missing_path();
         }
-        let path = Path::new(&self.root).join(&path_arg).normalize();
+        let path = Path::new(&self.scope.root).join(&path_arg).normalize();
         if !path.exists() {
             Logger::info(
                 format!(
@@ -94,7 +91,7 @@ impl InternalExecutable for RegisterCommand {
         Logger::info("Registering a new command");
         let command_path = self.validate_path(args);
         let template_path =
-            InternalFileSystem::new(&self.root).resolve_template("command_template.ts");
+            InternalFileSystem::new(&self.scope.root).resolve_template("command_template.ts");
         let mut source = File::open(template_path).expect("Template");
         let mut target = File::create(&command_path).expect("creating");
         io::copy(&mut source, &mut target).expect("writing");

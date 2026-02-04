@@ -1,5 +1,13 @@
 use std::collections::HashMap;
 
+use crate::repokit::interfaces::RepoKitConfig;
+
+#[derive(Clone)]
+pub struct RepoKitScope {
+    pub root: String,
+    pub configuration: RepoKitConfig,
+}
+
 #[derive(Clone)]
 pub struct InternalExecutableDefinition {
     pub name: String,
@@ -14,7 +22,7 @@ pub struct InternalExecutableDefinitionInput<'a, const N: usize> {
 }
 
 impl InternalExecutableDefinition {
-    pub fn define<'a, const N: usize>(
+    pub fn define<const N: usize>(
         definition: InternalExecutableDefinitionInput<N>,
     ) -> InternalExecutableDefinition {
         let InternalExecutableDefinitionInput {

@@ -5,26 +5,24 @@ use crate::{
     executables::{
         intenal_executable::InternalExecutable,
         internal_executable_definition::{
-            InternalExecutableDefinition, InternalExecutableDefinitionInput,
+            InternalExecutableDefinition, InternalExecutableDefinitionInput, RepoKitScope,
         },
     },
     internal_commands::help::Help,
     logger::logger::Logger,
-    repokit::interfaces::{CommandDefinition, RepoKitCommand, RepoKitConfig},
+    repokit::interfaces::{CommandDefinition, RepoKitCommand},
     validations::command_validations::CommandValidations,
 };
 
 pub struct SearchCommands {
-    pub root: String,
-    pub configuration: RepoKitConfig,
+    pub scope: RepoKitScope,
     pub definition: InternalExecutableDefinition,
 }
 
 impl SearchCommands {
-    pub fn new(root: String, configuration: RepoKitConfig) -> SearchCommands {
+    pub fn new(scope: &RepoKitScope) -> SearchCommands {
         SearchCommands {
-            root,
-            configuration,
+            scope: scope.clone(),
             definition: InternalExecutableDefinition::define(InternalExecutableDefinitionInput {
                 name: "search",
                 description: "Retrieve commands that match any search query",
@@ -46,8 +44,7 @@ impl SearchCommands {
         }
         if let Some(args) = &config.args {
             for (arg, description) in args {
-                if arg.to_lowercase().contains(query)
-                    || description.to_lowercase().contains(query)
+                if arg.to_lowercase().contains(query) || description.to_lowercase().contains(query)
                 {
                     return true;
                 }
@@ -66,7 +63,7 @@ impl SearchCommands {
         }
         if command
             .location
-            .replace(self.root.as_str(), "")
+            .replace(self.scope.root.as_str(), "")
             .to_lowercase()
             .contains(query)
         {
@@ -158,12 +155,11 @@ impl InternalExecutable for SearchCommands {
             Logger::exit_with_error("Please specify a search string to query with");
         }
         let query = args.join(" ").to_lowercase();
-        let externals = CommandValidations::new(self.root.clone(), self.configuration.clone())
-            .collect_and_validate_externals();
+        let externals = CommandValidations::new(&self.scope).collect_and_validate_externals();
         let mut root_results: HashMap<String, CommandDefinition> = HashMap::new();
         let mut internal_results: HashMap<String, &Box<dyn InternalExecutable>> = HashMap::new();
         let mut external_results: HashMap<String, RepoKitCommand> = HashMap::new();
-        for (command, script) in &self.configuration.commands {
+        for (command, script) in &self.scope.configuration.commands {
             if self.search_command(&query, script) {
                 root_results.insert(command.clone(), script.clone());
             }

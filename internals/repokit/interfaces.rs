@@ -31,13 +31,19 @@ impl RootCommand {
 #[derive(Debug, Deserialize, Clone)]
 pub struct RepoKitConfig {
     pub project: String,
+    pub thirdParty: Vec<RepoKitCommand>,
     pub commands: HashMap<String, CommandDefinition>,
+}
+
+fn registered_as_plugin() -> String {
+    "This command is registered in your devkit.ts file".to_string()
 }
 
 #[derive(Debug, Deserialize, Clone)]
 pub struct RepoKitCommand {
     pub name: String,
     pub owner: String,
+    #[serde(default = "registered_as_plugin")]
     pub location: String,
     pub description: String,
     pub commands: HashMap<String, CommandDefinition>,

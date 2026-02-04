@@ -27,9 +27,8 @@ impl TypescriptCommand {
         if stdout.is_empty() {
             Configuration::create(&self.root);
         }
-        let RepoKitConfig { project, commands } =
-            from_str(stdout.as_str()).expect("Error parsing stdout");
-        RepoKitConfig { project, commands }
+        let config: RepoKitConfig = from_str(stdout.as_str()).unwrap();
+        config
     }
 
     pub fn parse_commands(&self, path_list: Vec<String>) -> Vec<RepoKitCommand> {

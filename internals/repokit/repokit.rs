@@ -6,7 +6,9 @@ use std::{
 };
 
 use crate::{
-    executables::intenal_executable::InternalExecutable,
+    executables::{
+        intenal_executable::InternalExecutable, internal_executable_definition::RepoKitScope,
+    },
     executor::executor::Executor,
     internal_commands::help::Help,
     logger::logger::Logger,
@@ -15,16 +17,17 @@ use crate::{
 };
 
 pub struct RepoKit {
-    pub root: String,
-    pub configuration: RepoKitConfig,
+    pub scope: RepoKitScope,
 }
 
 impl RepoKit {
     pub fn new(root: String, configuration: RepoKitConfig) -> RepoKit {
         Logger::set_name(&configuration.project);
         RepoKit {
-            root,
-            configuration,
+            scope: RepoKitScope {
+                root,
+                configuration,
+            },
         }
     }
 
@@ -36,11 +39,16 @@ impl RepoKit {
             let interface = internals.get(&command).expect("exists");
             return interface.run(args, &internals);
         }
-        if self.configuration.commands.contains_key(&command) {
-            let root_script = self.configuration.commands.get(&command).expect("exists");
+        if self.scope.configuration.commands.contains_key(&command) {
+            let root_script = self
+                .scope
+                .configuration
+                .commands
+                .get(&command)
+                .expect("exists");
             return Executor::with_stdio(
                 format!("{} {}", root_script.command, &args.join(" ")),
-                |cmd| cmd.current_dir(Path::new(&self.root)),
+                |cmd| cmd.current_dir(Path::new(&self.scope.root)),
             );
         }
         let externals = validator.collect_and_validate_externals();
@@ -70,7 +78,7 @@ impl RepoKit {
         let argv: Vec<String> = args().collect();
         if argv.len() < 2 {
             let (internals, externals) = self.collect_and_validate();
-            Help::list_all(&self.configuration.commands, &internals, &externals);
+            Help::list_all(&self.scope.configuration.commands, &internals, &externals);
             process::exit(0);
         }
         let command = &argv[1];
@@ -99,7 +107,7 @@ impl RepoKit {
         internals: &HashMap<String, Box<dyn InternalExecutable>>,
         externals: &HashMap<String, RepoKitCommand>,
     ) {
-        Help::list_all(&self.configuration.commands, internals, externals);
+        Help::list_all(&self.scope.configuration.commands, internals, externals);
         Logger::info(
             format!(
                 "I'm not aware of a command named {}",

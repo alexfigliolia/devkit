@@ -17,8 +17,10 @@ pub struct ExternalCommands {
 }
 
 impl ExternalCommands {
-    pub fn new(root: String) -> ExternalCommands {
-        ExternalCommands { root }
+    pub fn new(root: &str) -> ExternalCommands {
+        ExternalCommands {
+            root: root.to_string(),
+        }
     }
 
     pub async fn find_all(&self) -> Vec<RepoKitCommand> {

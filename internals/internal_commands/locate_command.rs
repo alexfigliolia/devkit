@@ -1,30 +1,26 @@
-use ::futures::executor;
 use std::{collections::HashMap, process::exit};
 
 use crate::{
     executables::{
         intenal_executable::InternalExecutable,
         internal_executable_definition::{
-            InternalExecutableDefinition, InternalExecutableDefinitionInput,
+            InternalExecutableDefinition, InternalExecutableDefinitionInput, RepoKitScope,
         },
     },
-    external_commands::external_commands::ExternalCommands,
     internal_commands::help::Help,
     logger::logger::Logger,
-    repokit::interfaces::RepoKitConfig,
+    validations::command_validations::CommandValidations,
 };
 
 pub struct LocateCommand {
-    pub root: String,
-    pub configuration: RepoKitConfig,
+    pub scope: RepoKitScope,
     pub definition: InternalExecutableDefinition,
 }
 
 impl LocateCommand {
-    pub fn new(root: String, configuration: RepoKitConfig) -> LocateCommand {
+    pub fn new(scope: &RepoKitScope) -> LocateCommand {
         LocateCommand {
-            root,
-            configuration,
+            scope: scope.clone(),
             definition: InternalExecutableDefinition::define(InternalExecutableDefinitionInput {
                 name: "locate",
                 description: "Locates command definitions",
@@ -34,9 +30,9 @@ impl LocateCommand {
     }
 
     fn search_externals(&self, query: &str) {
-        let finder = ExternalCommands::new(self.root.clone());
-        let commands = executor::block_on(finder.find_all());
-        for command in commands {
+        let finder = CommandValidations::new(&self.scope);
+        let all = finder.collect_and_validate_externals();
+        for (_, command) in all {
             if command.name == query {
                 Logger::log_file_path(&command.location);
                 exit(0);
@@ -45,8 +41,8 @@ impl LocateCommand {
     }
 
     fn search_root(&self, command: &str) {
-        if self.configuration.commands.contains_key(command) {
-            Logger::log_file_path(format!("{}/repokit.ts", &self.root).as_str());
+        if self.scope.configuration.commands.contains_key(command) {
+            Logger::log_file_path(format!("{}/repokit.ts", &self.scope.root).as_str());
             exit(0);
         }
     }

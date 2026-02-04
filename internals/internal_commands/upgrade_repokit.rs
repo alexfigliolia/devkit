@@ -5,26 +5,23 @@ use crate::{
     executables::{
         intenal_executable::InternalExecutable,
         internal_executable_definition::{
-            InternalExecutableDefinition, InternalExecutableDefinitionInput,
+            InternalExecutableDefinition, InternalExecutableDefinitionInput, RepoKitScope,
         },
     },
     executor::executor::Executor,
     internal_commands::help::Help,
     logger::logger::Logger,
-    repokit::interfaces::RepoKitConfig,
 };
 
 pub struct UpgradeRepoKit {
-    pub root: String,
-    pub configuration: RepoKitConfig,
+    pub scope: RepoKitScope,
     pub definition: InternalExecutableDefinition,
 }
 
 impl UpgradeRepoKit {
-    pub fn new(root: String, configuration: RepoKitConfig) -> UpgradeRepoKit {
+    pub fn new(scope: &RepoKitScope) -> UpgradeRepoKit {
         UpgradeRepoKit {
-            root,
-            configuration,
+            scope: scope.clone(),
             definition: InternalExecutableDefinition::define(InternalExecutableDefinitionInput {
                 name: "upgrade",
                 description: "Upgrades your installation of repokit to the latest stable version",
@@ -41,7 +38,7 @@ impl UpgradeRepoKit {
             ("bun", ("bun.lockb", "bun add -d")),
         ]);
         for (manager, (lock_file, command_prefix)) in manager_map {
-            let path = Path::new(&self.root).join(lock_file).normalize();
+            let path = Path::new(&self.scope.root).join(lock_file).normalize();
             if path.exists() && path.is_file() {
                 Logger::info(
                     format!("Detected {} installation", Logger::blue_bright(manager)).as_str(),
@@ -63,7 +60,7 @@ impl InternalExecutable for UpgradeRepoKit {
         let command_prefix = self.get_package_manager();
         Executor::exec(
             format!("{} @repokit/core@latest", command_prefix).as_str(),
-            |cmd| cmd.current_dir(&self.root),
+            |cmd| cmd.current_dir(&self.scope.root),
         );
         Logger::info("Upgrade complete!");
     }

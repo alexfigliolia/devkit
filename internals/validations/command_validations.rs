@@ -3,47 +3,43 @@ use std::collections::HashMap;
 use futures::executor;
 
 use crate::{
-    repokit::{
-        repokit::RepoKit,
-        interfaces::{RepoKitCommand, RepoKitConfig},
+    executables::{
+        intenal_executable::InternalExecutable, internal_executable_definition::RepoKitScope,
     },
-    executables::intenal_executable::InternalExecutable,
     external_commands::external_commands::ExternalCommands,
     internal_commands::internal_registry::InternalRegistry,
     logger::logger::Logger,
+    repokit::{interfaces::RepoKitCommand, repokit::RepoKit},
 };
 
 pub struct CommandValidations {
-    root: String,
-    configuration: RepoKitConfig,
+    scope: RepoKitScope,
 }
 
 impl CommandValidations {
-    pub fn new(root: String, configuration: RepoKitConfig) -> CommandValidations {
+    pub fn new(scope: &RepoKitScope) -> CommandValidations {
         CommandValidations {
-            root,
-            configuration,
+            scope: scope.clone(),
         }
     }
 
     pub fn from(kit: &RepoKit) -> CommandValidations {
         CommandValidations {
-            root: kit.root.clone(),
-            configuration: kit.configuration.clone(),
+            scope: kit.scope.clone(),
         }
     }
 
     pub fn collect_and_validate_internals(&self) -> HashMap<String, Box<dyn InternalExecutable>> {
-        let internals =
-            InternalRegistry::new(self.root.clone(), self.configuration.clone()).get_all();
+        let internals = InternalRegistry::new(&self.scope).get_all();
         self.detect_collisions_between_internals_and_root_commands(&internals);
         internals
     }
 
     pub fn collect_and_validate_externals(&self) -> HashMap<String, RepoKitCommand> {
-        let finder = ExternalCommands::new(self.root.clone());
+        let finder = ExternalCommands::new(&self.scope.root);
         let externals = executor::block_on(finder.find_all());
-        self.detect_collisions_between_root_commands_and_externals(&externals)
+        let all = [&externals[..], &self.scope.configuration.thirdParty[..]].concat();
+        self.detect_collisions_between_root_commands_and_externals(&all)
     }
 
     pub fn detect_collisions_between_internals_and_externals(
@@ -71,7 +67,7 @@ impl CommandValidations {
         internals: &HashMap<String, Box<dyn InternalExecutable>>,
     ) {
         for name in internals.keys() {
-            if self.configuration.commands.contains_key(name) {
+            if self.scope.configuration.commands.contains_key(name) {
                 Logger::info(
                     format!(
                         "I encountered a command named {} in your {} file that conflicts with one of my internals",
@@ -96,7 +92,12 @@ impl CommandValidations {
                 self.on_external_duplicate_collision(command, &original.location);
             }
             map.insert(command.name.clone(), command.clone());
-            if self.configuration.commands.contains_key(&command.name) {
+            if self
+                .scope
+                .configuration
+                .commands
+                .contains_key(&command.name)
+            {
                 self.on_external_root_collision(command);
             }
         }

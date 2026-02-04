@@ -1,5 +1,8 @@
+import type { RepoKitCommand } from "./RepoKitCommand";
+
 export interface IRepoKitConfig {
   project: string;
+  thirdParty?: RepoKitCommand[];
   commands?: Record<string, ICommand>;
 }
 

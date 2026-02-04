@@ -4,25 +4,22 @@ use crate::{
     executables::{
         intenal_executable::InternalExecutable,
         internal_executable_definition::{
-            InternalExecutableDefinition, InternalExecutableDefinitionInput,
+            InternalExecutableDefinition, InternalExecutableDefinitionInput, RepoKitScope,
         },
     },
     internal_commands::help::Help,
     logger::logger::Logger,
-    repokit::interfaces::RepoKitConfig,
 };
 
 pub struct Onboarder {
-    pub root: String,
-    pub configuration: RepoKitConfig,
+    pub scope: RepoKitScope,
     pub definition: InternalExecutableDefinition,
 }
 
 impl Onboarder {
-    pub fn new(root: String, configuration: RepoKitConfig) -> Onboarder {
+    pub fn new(scope: &RepoKitScope) -> Onboarder {
         Onboarder {
-            root,
-            configuration,
+            scope: scope.clone(),
             definition: InternalExecutableDefinition::define(InternalExecutableDefinitionInput {
                 name: "onboard",
                 description: "Onboarding instructions for first time users",
