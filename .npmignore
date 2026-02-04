@@ -10,3 +10,4 @@ node_modules
 repokit.ts
 tsconfig.json
 yarn.lock
+installation/symlink.sh

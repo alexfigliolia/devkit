@@ -93,7 +93,8 @@ impl InternalExecutable for RegisterCommand {
     fn run(&self, args: Vec<String>, _: &HashMap<String, Box<dyn InternalExecutable>>) {
         Logger::info("Registering a new command");
         let command_path = self.validate_path(args);
-        let template_path = InternalFileSystem::resolve_template("command_template.ts");
+        let template_path =
+            InternalFileSystem::new(&self.root).resolve_template("command_template.ts");
         let mut source = File::open(template_path).expect("Template");
         let mut target = File::create(&command_path).expect("creating");
         io::copy(&mut source, &mut target).expect("writing");

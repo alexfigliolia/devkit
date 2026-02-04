@@ -1,6 +1,6 @@
 {
   "name": "@repokit/core",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "A knowledgebase for your repository - wrapped in a CLI",
   "keywords": [
     "cli",
@@ -22,12 +22,14 @@
   "scripts": {
     "build:all": "yarn lint:ts && yarn lint:rust && yarn install:rust",
     "build:rust": "cargo build --release",
+    "grant:exec": "chmod -R +x ./installation",
     "install:rust": "yarn build:rust && cargo install --path .",
     "lint:rust": "cargo clippy --fix --allow-dirty",
     "lint:ts": "yarn oxlint --type-aware --type-check --report-unused-disable-directives --fix && yarn oxfmt",
-    "postinstall": "chmod +x ./install.sh && ./install.sh",
+    "postinstall": "yarn grant:exec && ./installation/install.sh",
     "repokit": "yarn install:repokit && repokit",
-    "run:dev": "cargo run --package repokit --bin repokit"
+    "run:dev": "yarn symlink && cargo run --package repokit --bin repokit",
+    "symlink": "yarn grant:exec && ./installation/symlink.sh"
   },
   "dependencies": {
     "@figliolia/event-emitter": "^1.1.6",

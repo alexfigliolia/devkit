@@ -6,7 +6,7 @@ REPO_ROOT=$(git rev-parse --show-toplevel)
 cd $REPO_ROOT
 
 command_exists() {
-    command -v "$1"
+    command -v "$1" > /dev/null 2>&1
 }
 
 if command_exists rustc && command_exists cargo; then

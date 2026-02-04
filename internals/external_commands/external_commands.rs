@@ -64,7 +64,7 @@ impl ExternalCommands {
             }
         }
         pool.pool.shutdown_background();
-        TypescriptCommand::new(self.root.clone()).parse_commands(paths)
+        TypescriptCommand::new(&self.root).parse_commands(paths)
     }
 
     fn read(path: &Path) -> bool {

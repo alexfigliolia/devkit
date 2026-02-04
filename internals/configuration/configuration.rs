@@ -12,7 +12,8 @@ impl Configuration {
             return;
         }
         Configuration::welcome();
-        let template_path = InternalFileSystem::resolve_template("configuration_template.ts");
+        let template_path =
+            InternalFileSystem::new(root).resolve_template("configuration_template.ts");
         let mut source = File::open(template_path).expect("Template");
         let mut target = File::create(path_buf).expect("creating");
         io::copy(&mut source, &mut target).expect("writing");

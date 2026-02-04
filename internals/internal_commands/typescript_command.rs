@@ -14,12 +14,15 @@ pub struct TypescriptCommand {
 }
 
 impl TypescriptCommand {
-    pub fn new(root: String) -> TypescriptCommand {
-        TypescriptCommand { root }
+    pub fn new(root: &str) -> TypescriptCommand {
+        TypescriptCommand {
+            root: root.to_string(),
+        }
     }
 
     pub fn parse_configuration(&self) -> RepoKitConfig {
-        let executable = InternalFileSystem::resolve_command("parse_configuration.ts");
+        let executable =
+            InternalFileSystem::new(&self.root).resolve_command("parse_configuration.ts");
         let stdout = self.execute(format!("{executable} --root {}", &self.root).as_str());
         if stdout.is_empty() {
             Configuration::create(&self.root);
@@ -31,7 +34,7 @@ impl TypescriptCommand {
 
     pub fn parse_commands(&self, path_list: Vec<String>) -> Vec<RepoKitCommand> {
         let paths = path_list.join(",");
-        let executable = InternalFileSystem::resolve_command("parse_commands.ts");
+        let executable = InternalFileSystem::new(&self.root).resolve_command("parse_commands.ts");
         let stdout =
             self.execute(format!("{executable} --paths {paths} --root {}", self.root).as_str());
         let commands: Vec<RepoKitCommand> = serde_json::from_str(&stdout).expect("parse");
