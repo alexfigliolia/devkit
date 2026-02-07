@@ -1,6 +1,6 @@
 use crate::{
-    executor::executor::Executor, internal_commands::typescript_command::TypescriptCommand,
-    repokit::repokit::RepoKit,
+    internal_commands::typescript_command::TypescriptCommand,
+    internal_filesystem::internal_filesystem::InternalFileSystem, repokit::repokit::RepoKit,
 };
 
 mod configuration;
@@ -14,7 +14,7 @@ mod repokit;
 mod validations;
 
 fn main() {
-    let root = Executor::exec("git rev-parse --show-toplevel", |cmd| cmd);
+    let root = InternalFileSystem::find_root();
     let config = TypescriptCommand::new(&root).parse_configuration();
     let kit = RepoKit::new(root, config);
     kit.invoke();

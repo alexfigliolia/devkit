@@ -1,7 +1,13 @@
-set -e 
+
+CWD=$(pwd)
+REPLACEMENT="/node_modules"
+FALLBACK_ROOT="${CWD%${REPLACEMENT}*}"
 
 SCRIPT_ORIGIN=$(pwd)
-REPO_ROOT=$(git rev-parse --show-toplevel)
+GIT_ROOT=$(git rev-parse --show-toplevel 2>/dev/null)
+NODE_MODULES_PARENT="$(pwd)/../"
+REPO_ROOT=${GIT_ROOT:-$FALLBACK_ROOT}
+
 
 cd $REPO_ROOT
 
@@ -35,7 +41,7 @@ fi
 
 echo "Installing Repokit CLI"
 
-cd "$SCRIPT_ORIGIN"
+cd $SCRIPT_ORIGIN
 
 echo "Compiling from $SCRIPT_ORIGIN"
 

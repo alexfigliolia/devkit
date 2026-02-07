@@ -1,6 +1,8 @@
 use normalize_path::NormalizePath;
 use std::path::{Path, PathBuf};
 
+use crate::{executor::executor::Executor, logger::logger::Logger};
+
 pub struct InternalFileSystem {
     root: String,
 }
@@ -23,6 +25,23 @@ impl InternalFileSystem {
 
     pub fn resolve_template(&self, file_name: &str) -> String {
         self.path_buf_to_str(self.templates_directory().join(file_name))
+    }
+
+    pub fn find_root() -> String {
+        let root = Executor::exec("echo $(git rev-parse --show-toplevel 2>/dev/null)", |cmd| {
+            cmd
+        });
+        if root.is_empty() {
+            Logger::exit_with_info(
+                format!(
+                    "To start using {}, please initialize your git repository by running {}",
+                    Logger::blue("Repokit"),
+                    Logger::green_bright("git init")
+                )
+                .as_str(),
+            );
+        }
+        root
     }
 
     fn commands_directory(&self) -> PathBuf {
