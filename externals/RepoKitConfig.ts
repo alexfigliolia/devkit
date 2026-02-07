@@ -1,5 +1,5 @@
 import type { ICommand, IRepoKitConfig } from "./types";
-import type { RepoKitCommand } from "./RepoKitCommand";
+import { RepoKitCommand } from "./RepoKitCommand";
 
 export class RepoKitConfig implements Required<IRepoKitConfig> {
   project: string;
@@ -8,6 +8,6 @@ export class RepoKitConfig implements Required<IRepoKitConfig> {
   constructor({ project, commands = {}, thirdParty = [] }: IRepoKitConfig) {
     this.project = project;
     this.commands = commands;
-    this.thirdParty = thirdParty;
+    this.thirdParty = thirdParty.map(command => new RepoKitCommand(command));
   }
 }
