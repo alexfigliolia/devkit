@@ -4,6 +4,7 @@ CWD=$(pwd)
 MODULE_DIRECTORY="node_modules"
 
 if [[ "$CWD" != *"$MODULE_DIRECTORY"* ]]; then
+    yarn symlink;
     exit 0;
 fi
 
