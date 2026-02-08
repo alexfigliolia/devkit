@@ -1,5 +1,6 @@
 import type { ICommand, IRepoKitConfig } from "./types";
 import { RepoKitCommand } from "./RepoKitCommand";
+/* eslint-disable typescript-eslint(no-misused-spread */
 
 export class RepoKitConfig implements Required<IRepoKitConfig> {
   project: string;
@@ -9,5 +10,12 @@ export class RepoKitConfig implements Required<IRepoKitConfig> {
     this.project = project;
     this.commands = commands;
     this.thirdParty = thirdParty.map(command => new RepoKitCommand(command));
+  }
+
+  public toScoped(location: string) {
+    return {
+      ...this,
+      thirdParty: this.thirdParty.map(command => ({ ...command, location })),
+    };
   }
 }

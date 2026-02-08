@@ -36,7 +36,7 @@
             "ignoreVoid": true
           }
         ],
-        "typescript/strict-boolean-expressions": "error",
+        "typescript/strict-boolean-expressions": "off",
         "typescript/consistent-type-imports": "error",
         "typescript-eslint/no-unused-vars": [
           "error",

@@ -1,11 +1,17 @@
 
 CWD=$(pwd)
+
+MODULE_DIRECTORY="node_modules"
+
+if [[ "$CWD" != *"$MODULE_DIRECTORY"* ]]; then
+    exit 0;
+fi
+
 REPLACEMENT="/node_modules"
 FALLBACK_ROOT="${CWD%${REPLACEMENT}*}"
 
 SCRIPT_ORIGIN=$(pwd)
 GIT_ROOT=$(git rev-parse --show-toplevel 2>/dev/null)
-NODE_MODULES_PARENT="$(pwd)/../"
 REPO_ROOT=${GIT_ROOT:-$FALLBACK_ROOT}
 
 
@@ -49,5 +55,5 @@ echo "Compiling from $SCRIPT_ORIGIN"
 RUSTFLAGS="-Awarnings" cargo build --release
 cargo install --path .
 
-cd "$REPO_ROOT"
+cd $REPO_ROOT
 repokit

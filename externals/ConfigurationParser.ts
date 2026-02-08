@@ -14,7 +14,7 @@ export class ConfigurationParser {
     const config = await import(path);
     for (const key in config) {
       if (config[key] instanceof RepoKitConfig) {
-        return console.log(JSON.stringify(config[key]));
+        return console.log(JSON.stringify(config[key].toScoped(path)));
       }
     }
   }
