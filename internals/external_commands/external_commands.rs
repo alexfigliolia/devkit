@@ -74,7 +74,7 @@ impl ExternalCommands {
         let reader: BufReader<File> = BufReader::new(file);
         for line_result in reader.lines() {
             let line: String = line_result.expect("line");
-            if line.ends_with("\"@repokit/core\";") {
+            if line.ends_with("\"@repokit/core\";") || line.ends_with("'@repokit/core';") {
                 return true;
             }
         }
